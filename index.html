@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лео - помощник 7Б класса</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <div class="avatar">МУ</div>
+            <div class="user-details">
+                <h2>Усков Максим</h2>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container fade-in">
+        <h1 class="text-center">Добро пожаловать!</h1>
+        <p class="text-center">Усков Максим</p>
+
+        <div class="quick-actions">
+            <a href="chat.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Лео Ассистент</h3>
+                <p>Задай вопрос</p>
+            </a>
+
+            <a href="friends.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Друзья</h3>
+                <p>0 в списке</p>
+            </a>
+
+            <a href="schedule.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>Расписание</h3>
+                <p>На неделю</p>
+            </a>
+
+            <a href="homework.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3>Домашка</h3>
+                <p>Проверить</p>
+            </a>
+        </div>
+
+        <div class="card tip-card">
+            <h3><i class="fas fa-lightbulb"></i> Совет</h3>
+            <p>Используй Лео Ассистента для решения задач по любым предметам! 💡</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-trophy"></i> Топ учеников</h2>
+            
+            <div class="ranking">
+                <div class="ranking-item">
+                    <div class="rank-number">1</div>
+                    <div class="ranking-details">
+                        <h4>Усков Максим</h4>
+                        <p>ID: 30683 • Уровень 11</p>
+                    </div>
+                    <div class="points">500</div>
+                </div>
+
+                <div class="ranking-item">
+                    <div class="rank-number">2</div>
+                    <div class="ranking-details">
+                        <h4>Шиляева Луиза</h4>
+                        <p>ID: 80344 • Уровень 8</p>
+                    </div>
+                    <div class="points">350</div>
+                </div>
+
+                <div class="ranking-item">
+                    <div class="rank-number">3</div>
+                    <div class="ranking-details">
+                        <h4>Руднева Анна</h4>
+                        <p>ID: 81341 • Уровень 5</p>
+                    </div>
+                    <div class="points">200</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="location.href='chat.html'">
+            <i class="fas fa-comment-dots"></i> Начать общение с Лео
+        </button>
+    </div>
+
+    <!-- Навигационное меню -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-item active">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Главная</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+            <i class="fas fa-robot nav-icon"></i>
+            <span>Лео</span>
+        </a>
+        <a href="friends.html" class="nav-item">
+            <i class="fas fa-users nav-icon"></i>
+            <span>Друзья</span>
+        </a>
+        <a href="schedule.html" class="nav-item">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span>Расписание</span>
+        </a>
+        <a href="homework.html" class="nav-item">
+            <i class="fas fa-book nav-icon"></i>
+            <span>Домашка</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Профиль</span>
+        </a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
