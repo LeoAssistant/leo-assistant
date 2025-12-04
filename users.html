@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи - Лео</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .users-header {
+            background: linear-gradient(135deg, #10b981, #0d9488);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .users-container {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+        
+        .users-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #10b981;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .users-search {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .users-search input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .users-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .users-filter-btn {
+            padding: 10px 20px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .users-filter-btn.active {
+            background: #10b981;
+            color: white;
+        }
+        
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .user-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .user-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar-large {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #10b981, #0d9488);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+            font-size: 18px;
+        }
+        
+        .user-username {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .user-details {
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .user-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: #475569;
+        }
+        
+        .user-detail i {
+            width: 20px;
+            color: #94a3b8;
+        }
+        
+        .user-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-online {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-offline {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .user-action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .message-btn {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        
+        .profile-btn {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        .admin-btn {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .no-users {
+            text-align: center;
+            padding: 50px 20px;
+            color: #64748b;
+            grid-column: 1 / -1;
+        }
+        
+        .no-users i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+        
+        .export-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #10b981, #0d9488);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        .export-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .page-btn.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .page-btn:hover:not(.active) {
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <div class="users-header">
+        <div class="user-info">
+            <div class="avatar">ПО</div>
+            <div class="user-details">
+                <h2>Профили пользователей</h2>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>Всего профилей: 6 • Активных: 3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="users-container">
+        <div class="users-stats">
+            <div class="stat-card">
+                <i class="fas fa-users fa-2x" style="color: #10b981;"></i>
+                <div class="stat-number">6</div>
+                <div class="stat-label">Всего пользователей</div>
+            </div>
+            
+            <div class="stat-card">
+                <i class="fas fa-user-check fa-2x" style="color: #3b82f6;"></i>
+                <div class="stat-number">3</div>
+                <div class="stat-label">Активных сейчас</div>
+            </div>
+            
+            <div class="stat-card">
+                <i class="fas fa-graduation-cap fa-2x" style="color: #8b5cf6;"></i>
+                <div class="stat-number">7Б</div>
+                <div class="stat-label">Класс всех</div>
+            </div>
+            
+            <div class="stat-card">
+                <i class="fas fa-question-circle fa-2x" style="color: #f59e0b;"></i>
+                <div class="stat-number">21</div>
+                <div class="stat-label">Всего вопросов</div>
+            </div>
+        </div>
+        
+        <div class="users-search">
+            <input type="text" 
+                   placeholder="Поиск по имени, ID или классу..."
+                   id="usersSearch"
+                   oninput="searchUsers()">
+            <button class="action-btn" onclick="searchUsers()">
+                <i class="fas fa-search"></i> Поиск
+            </button>
+        </div>
+        
+        <div class="users-filter">
+            <button class="users-filter-btn active" onclick="filterUsers('all')">Все</button>
+            <button class="users-filter-btn" onclick="filterUsers('active')">Активные</button>
+            <button class="users-filter-btn" onclick="filterUsers('online')">Online</button>
+            <button class="users-filter-btn" onclick="filterUsers('offline')">Offline</button>
+            <button class="users-filter-btn" onclick="filterUsers('top')">Топ по очкам</button>
+            <button class="users-filter-btn" onclick="filterUsers('new')">Новые</button>
+        </div>
+        
+        <div class="users-grid" id="usersGrid">
+            <!-- ПОЛЬЗОВАТЕЛЬ 1 -->
+            <div class="user-card" data-status="online" data-active="true" data-points="500">
+                <div class="user-card-header">
+                    <div class="user-avatar-large">УМ</div>
+                    <div class="user-info">
+                        <div class="user-name">Усков Максим</div>
+                        <div class="user-username">@Усков Максим</div>
+                        <span class="user-status status-online">
+                            <div class="status-dot" style="background: #10b981; width: 6px; height: 6px;"></div>
+                            ONLINE
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-details">
+                    <div class="user-detail">
+                        <i class="fas fa-id-card"></i>
+                        ID: <strong>30683</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-graduation-cap"></i>
+                        Класс: <strong>7Б</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-signal"></i>
+                        Уровень: <strong>11</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-star"></i>
+                        Очки: <strong>500</strong> ✈
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-question-circle"></i>
+                        Вопросов: <strong>12</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-clock"></i>
+                        Последний вход: <strong>21:05</strong>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="user-action-btn message-btn" onclick="messageUser(30683)">
+                        <i class="fas fa-comment"></i> Написать
+                    </button>
+                    <button class="user-action-btn profile-btn" onclick="viewProfile(30683)">
+                        <i class="fas fa-user"></i> Профиль
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ПОЛЬЗОВАТЕЛЬ 2 -->
+            <div class="user-card" data-status="offline" data-active="false" data-points="150">
+                <div class="user-card-header">
+                    <div class="user-avatar-large">ЗД</div>
+                    <div class="user-info">
+                        <div class="user-name">Золотых Давид</div>
+                        <div class="user-username">@Золотых Давид</div>
+                        <span class="user-status status-offline">
+                            <div class="status-dot" style="background: #94a3b8; width: 6px; height: 6px;"></div>
+                            OFFLINE
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-details">
+                    <div class="user-detail">
+                        <i class="fas fa-id-card"></i>
+                        ID: <strong>83386</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-graduation-cap"></i>
+                        Класс: <strong>7Б</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-signal"></i>
+                        Уровень: <strong>8</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-star"></i>
+                        Очки: <strong>150</strong> ✈
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-question-circle"></i>
+                        Вопросов: <strong>5</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-clock"></i>
+                        Последний вход: <strong>30.11.2025</strong>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="user-action-btn message-btn" onclick="messageUser(83386)">
+                        <i class="fas fa-comment"></i> Написать
+                    </button>
+                    <button class="user-action-btn profile-btn" onclick="viewProfile(83386)">
+                        <i class="fas fa-user"></i> Профиль
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ПОЛЬЗОВАТЕЛЬ 3 -->
+            <div class="user-card" data-status="online" data-active="true" data-points="200">
+                <div class="user-card-header">
+                    <div class="user-avatar-large">РА</div>
+                    <div class="user-info">
+                        <div class="user-name">Руднева Анна</div>
+                        <div class="user-username">@Руднева Анна</div>
+                        <span class="user-status status-online">
+                            <div class="status-dot" style="background: #10b981; width: 6px; height: 6px;"></div>
+                            ONLINE
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-details">
+                    <div class="user-detail">
+                        <i class="fas fa-id-card"></i>
+                        ID: <strong>81341</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-graduation-cap"></i>
+                        Класс: <strong>7Б</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-signal"></i>
+                        Уровень: <strong>5</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-star"></i>
+                        Очки: <strong>200</strong> ✈
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-question-circle"></i>
+                        Вопросов: <strong>3</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-clock"></i>
+                        Последний вход: <strong>Сегодня</strong>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="user-action-btn message-btn" onclick="messageUser(81341)">
+                        <i class="fas fa-comment"></i> Написать
+                    </button>
+                    <button class="user-action-btn profile-btn" onclick="viewProfile(81341)">
+                        <i class="fas fa-user"></i> Профиль
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ПОЛЬЗОВАТЕЛЬ 4 -->
+            <div class="user-card" data-status="offline" data-active="false" data-points="0">
+                <div class="user-card-header">
+                    <div class="user-avatar-large">Т1</div>
+                    <div class="user-info">
+                        <div class="user-name">Тестовый Аккаунт 1</div>
+                        <div class="user-username">@Тестовый Аккаунт 1</div>
+                        <span class="user-status status-offline">
+                            <div class="status-dot" style="background: #94a3b8; width: 6px; height: 6px;"></div>
+                            OFFLINE
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-details">
+                    <div class="user-detail">
+                        <i class="fas fa-id-card"></i>
+                        ID: <strong>11990</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-graduation-cap"></i>
+                        Класс: <strong>7Б</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-signal"></i>
+                        Уровень: <strong>1</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-star"></i>
+                        Очки: <strong>0</strong> ✈
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-question-circle"></i>
+                        Вопросов: <strong>0</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-clock"></i>
+                        Последний вход: <strong>25.11.2025</strong>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="user-action-btn message-btn" onclick="messageUser(11990)">
+                        <i class="fas fa-comment"></i> Написать
+                    </button>
+                    <button class="user-action-btn admin-btn" onclick="deleteUser(11990)">
+                        <i class="fas fa-trash"></i> Удалить
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ПОЛЬЗОВАТЕЛЬ 5 -->
+            <div class="user-card" data-status="offline" data-active="false" data-points="0">
+                <div class="user-card-header">
+                    <div class="user-avatar-large">Т2</div>
+                    <div class="user-info">
+                        <div class="user-name">Тестовый Аккаунт 2</div>
+                        <div class="user-username">@Тестовый Аккаунт 2</div>
+                        <span class="user-status status-offline">
+                            <div class="status-dot" style="background: #94a3b8; width: 6px; height: 6px;"></div>
+                            OFFLINE
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-details">
+                    <div class="user-detail">
+                        <i class="fas fa-id-card"></i>
+                        ID: <strong>19925</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-graduation-cap"></i>
+                        Класс: <strong>7Б</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-signal"></i>
+                        Уровень: <strong>1</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-star"></i>
+                        Очки: <strong>0</strong> ✈
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-question-circle"></i>
+                        Вопросов: <strong>0</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-clock"></i>
+                        Последний вход: <strong>20.11.2025</strong>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="user-action-btn message-btn" onclick="messageUser(19925)">
+                        <i class="fas fa-comment"></i> Написать
+                    </button>
+                    <button class="user-action-btn admin-btn" onclick="deleteUser(19925)">
+                        <i class="fas fa-trash"></i> Удалить
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ПОЛЬЗОВАТЕЛЬ 6 -->
+            <div class="user-card" data-status="offline" data-active="false" data-points="350">
+                <div class="user-card-header">
+                    <div class="user-avatar-large">ШЛ</div>
+                    <div class="user-info">
+                        <div class="user-name">Шиляева Луиза</div>
+                        <div class="user-username">@Шиляева Луиза</div>
+                        <span class="user-status status-offline">
+                            <div class="status-dot" style="background: #94a3b8; width: 6px; height: 6px;"></div>
+                            OFFLINE
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-details">
+                    <div class="user-detail">
+                        <i class="fas fa-id-card"></i>
+                        ID: <strong>80344</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-graduation-cap"></i>
+                        Класс: <strong>7Б</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-signal"></i>
+                        Уровень: <strong>8</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-star"></i>
+                        Очки: <strong>350</strong> ✈
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-question-circle"></i>
+                        Вопросов: <strong>1</strong>
+                    </div>
+                    <div class="user-detail">
+                        <i class="fas fa-clock"></i>
+                        Последний вход: <strong>29.11.2025</strong>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="user-action-btn message-btn" onclick="messageUser(80344)">
+                        <i class="fas fa-comment"></i> Написать
+                    </button>
+                    <button class="user-action-btn profile-btn" onclick="viewProfile(80344)">
+                        <i class="fas fa-user"></i> Профиль
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="no-users hidden" id="noUsers">
+            <i class="fas fa-user-slash"></i>
+            <h3>Пользователи не найдены</h3>
+            <p>Попробуйте изменить фильтры или поисковый запрос</p>
+        </div>
+        
+        <div class="pagination">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+    
+    <button class="export-btn" onclick="exportUsers()" title="Экспорт пользователей">
+        <i class="fas fa-file-export"></i>
+    </button>
+
+    <!-- Навигация -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Главная</span>
+        </a>
+        <a href="admin.html" class="nav-item">
+            <i class="fas fa-shield-alt nav-icon"></i>
+            <span>Админ</span>
+        </a>
+        <a href="users.html" class="nav-item active">
+            <i class="fas fa-users nav-icon"></i>
+            <span>Пользователи</span>
+        </a>
+        <a href="activity.html" class="nav-item">
+            <i class="fas fa-chart-line nav-icon"></i>
+            <span>Активность</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <i class="fas fa-cog nav-icon"></i>
+            <span>Настройки</span>
+        </a>
+    </nav>
+
+    <script>
+        // Поиск пользователей
+        function searchUsers() {
+            const query = document.getElementById('usersSearch').value.toLowerCase();
+            
+            if (!query) {
+                // Если поиск пустой, показываем всех
+                document.querySelectorAll('.user-card').forEach(card => {
+                    card.style.display = 'block';
+                });
+                document.getElementById('noUsers').classList.add('hidden');
+                return;
+            }
+            
+            let foundCount = 0;
+            
+            document.querySelectorAll('.user-card').forEach(card => {
+                const name = card.querySelector('.user-name')?.textContent || '';
+                const username = card.querySelector('.user-username')?.textContent || '';
+                const details = card.querySelector('.user-details')?.textContent || '';
+                
+                const searchText = (name + ' ' + username + ' ' + details).toLowerCase();
+                
+                if (searchText.includes(query)) {
+                    card.style.display = 'block';
+                    foundCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Показываем/скрываем сообщение "не найдено"
+            const noUsers = document.getElementById('noUsers');
+            if (foundCount === 0) {
+                noUsers.classList.remove('hidden');
+                noUsers.innerHTML = `
+                    <i class="fas fa-search"></i>
+                    <h3>По запросу "${query}" пользователи не найдены</h3>
+                    <p>Попробуйте другой поисковый запрос</p>
+                `;
+            } else {
+                noUsers.classList.add('hidden');
+            }
+        }
+        
+        // Фильтрация пользователей
+        function filterUsers(filter) {
+            // Обновляем активную кнопку
+            document.querySelectorAll('.users-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const cards = document.querySelectorAll('.user-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const status = card.getAttribute('data-status');
+                const active = card.getAttribute('data-active');
+                const points = parseInt(card.getAttribute('data-points') || 0);
+                
+                let shouldShow = false;
+                
+                switch(filter) {
+                    case 'all':
+                        shouldShow = true;
+                        break;
+                    case 'active':
+                        shouldShow = active === 'true';
+                        break;
+                    case 'online':
+                        shouldShow = status === 'online';
+                        break;
+                    case 'offline':
+                        shouldShow = status === 'offline';
+                        break;
+                    case 'top':
+                        shouldShow = points >= 200;
+                        break;
+                    case 'new':
+                        // Здесь могла бы быть логика определения "новых" пользователей
+                        shouldShow = points <= 50;
+                        break;
+                }
+                
+                if (shouldShow) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Показываем/скрываем сообщение "нет пользователей"
+            const noUsers = document.getElementById('noUsers');
+            if (visibleCount === 0) {
+                noUsers.classList.remove('hidden');
+                noUsers.innerHTML = `
+                    <i class="fas fa-filter"></i>
+                    <h3>Нет пользователей по выбранному фильтру</h3>
+                    <p>Попробуйте другой фильтр</p>
+                `;
+            } else {
+                noUsers.classList.add('hidden');
+            }
+        }
+        
+        // Действия с пользователями
+        function messageUser(userId) {
+            alert(`💬 Открытие чата с пользователем ID: ${userId}`);
+            // В реальном приложении здесь переход к чату
+        }
+        
+        function viewProfile(userId) {
+            alert(`👤 Просмотр профиля пользователя ID: ${userId}`);
+            // В реальном приложении здесь открытие профиля
+        }
+        
+        function deleteUser(userId) {
+            if (confirm(`❌ Вы уверены, что хотите удалить пользователя с ID: ${userId}?`)) {
+                alert(`Пользователь ${userId} удален (в демо-версии только имитация)`);
+                // В реальном приложении здесь удаление из базы
+            }
+        }
+        
+        // Экспорт пользователей
+        function exportUsers() {
+            const users = [];
+            
+            document.querySelectorAll('.user-card').forEach(card => {
+                if (card.style.display !== 'none') {
+                    const name = card.querySelector('.user-name')?.textContent || '';
+                    const username = card.querySelector('.user-username')?.textContent || '';
+                    const status = card.getAttribute('data-status') || '';
+                    const points = card.getAttribute('data-points') || '0';
+                    
+                    // Извлекаем детали
+                    const details = {};
+                    card.querySelectorAll('.user-detail').forEach(detail => {
+                        const text = detail.textContent;
+                        if (text.includes('ID:')) details.id = text.split('ID:')[1]?.trim();
+                        if (text.includes('Класс:')) details.class = text.split('Класс:')[1]?.trim();
+                        if (text.includes('Уровень:')) details.level = text.split('Уровень:')[1]?.trim();
+                    });
+                    
+                    users.push({
+                        name,
+                        username,
+                        id: details.id,
+                        class: details.class,
+                        level: details.level,
+                        points,
+                        status,
+                        active: card.getAttribute('data-active')
+                    });
+                }
+            });
+            
+            // Создаем CSV
+            let csv = 'Имя,Username,ID,Класс,Уровень,Очки,Статус,Активен\n';
+            users.forEach(user => {
+                csv += `"${user.name}","${user.username}","${user.id}","${user.class}","${user.level}","${user.points}","${user.status}","${user.active}"\n`;
+            });
+            
+            // Скачиваем файл
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `leo-users-export-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert(`✅ Экспортировано ${users.length} пользователей`);
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            // Добавляем обработчик Enter для поиска
+            document.getElementById('usersSearch').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchUsers();
+                }
+            });
+            
+            // Сортировка по умолчанию (по очкам)
+            sortUsersByPoints();
+        });
+        
+        // Сортировка по очкам
+        function sortUsersByPoints() {
+            const grid = document.getElementById('usersGrid');
+            const cards = Array.from(grid.querySelectorAll('.user-card'));
+            
+            cards.sort((a, b) => {
+                const pointsA = parseInt(a.getAttribute('data-points') || 0);
+                const pointsB = parseInt(b.getAttribute('data-points') || 0);
+                return pointsB - pointsA; // По убыванию
+            });
+            
+            // Переставляем карточки
+            cards.forEach(card => grid.appendChild(card));
+        }
+    </script>
+</body>
+</html>
