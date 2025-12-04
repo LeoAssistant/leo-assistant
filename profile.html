@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль - Лео</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .profile-container {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+        
+        .profile-avatar-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            border: 4px solid white;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+        
+        .profile-form {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            border-color: #f59e0b;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        
+        .id-badge {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .id-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #92400e;
+            margin: 10px 0;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f59e0b;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .password-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        
+        .password-toggle {
+            cursor: pointer;
+            color: #3b82f6;
+            font-size: 14px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .cancel-btn {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+        }
+        
+        .profile-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .profile-tab {
+            padding: 12px 20px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .profile-tab.active {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .achievement {
+            text-align: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        .achievement i {
+            font-size: 24px;
+            color: #f59e0b;
+            margin-bottom: 8px;
+        }
+        
+        .achievement.locked {
+            opacity: 0.5;
+        }
+        
+        .achievement.locked i {
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-header">
+        <div class="user-info">
+            <div class="avatar">ПР</div>
+            <div class="user-details">
+                <h2>Мой профиль</h2>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>Редактирование • Уровень 11</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-avatar-section">
+            <div class="profile-avatar">МУ</div>
+            <button class="action-btn" style="background: #3b82f6;">
+                <i class="fas fa-camera"></i> Сменить аватар
+            </button>
+        </div>
+        
+        <div class="profile-tabs">
+            <button class="profile-tab active" onclick="switchProfileTab('info')">Основное</button>
+            <button class="profile-tab" onclick="switchProfileTab('stats')">Статистика</button>
+            <button class="profile-tab" onclick="switchProfileTab('achievements')">Достижения</button>
+            <button class="profile-tab" onclick="switchProfileTab('settings')">Настройки</button>
+        </div>
+        
+        <!-- ВКЛАДКА: ОСНОВНАЯ ИНФОРМАЦИЯ -->
+        <div id="info" class="tab-content active">
+            <div class="profile-form">
+                <div class="form-group">
+                    <label class="form-label">ФАМИЛИЯ</label>
+                    <input type="text" 
+                           class="form-input" 
+                           value="Усков" 
+                           id="lastName">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">ИГРОВОЙ НИК</label>
+                    <input type="text" 
+                           class="form-input" 
+                           placeholder="Придумай себе ник..."
+                           id="nickname">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">ИМЯ</label>
+                    <input type="text" 
+                           class="form-input" 
+                           value="Максим" 
+                           id="firstName">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">ОПИСАНИЕ</label>
+                    <textarea class="form-textarea" 
+                              id="description"
+                              placeholder="Расскажи о себе..."
+                              maxlength="100">Ученик 7Б класса, увлекаюсь программированием и математикой</textarea>
+                    <div class="char-counter">
+                        <span id="charCount">45</span>/100 символов
+                    </div>
+                </div>
+            </div>
+            
+            <div class="id-badge">
+                <h3><i class="fas fa-id-card"></i> ТВОЙ ID ПРОФИЛЯ</h3>
+                <div class="id-number">30683</div>
+                <p>Поделись этим ID, чтобы друзья добавили тебя</p>
+            </div>
+            
+            <div class="password-section">
+                <h3><i class="fas fa-lock"></i> Изменить пароль</h3>
+                <div class="form-group">
+                    <label class="form-label">Текущий пароль</label>
+                    <input type="password" class="form-input" id="currentPassword">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Новый пароль</label>
+                    <input type="password" class="form-input" id="newPassword">
+                    <div class="password-toggle" onclick="togglePassword('newPassword')">
+                        <i class="fas fa-eye"></i> Показать пароль
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Повторите новый пароль</label>
+                    <input type="password" class="form-input" id="confirmPassword">
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn cancel-btn" onclick="cancelEdit()">
+                    Отмена
+                </button>
+                <button class="btn save-btn" onclick="saveProfile()">
+                    <i class="fas fa-save"></i> Сохранить
+                </button>
+            </div>
+        </div>
+        
+        <!-- ВКЛАДКА: СТАТИСТИКА -->
+        <div id="stats" class="tab-content">
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <i class="fas fa-question-circle fa-2x"></i>
+                    <div class="stat-value">14</div>
+                    <div class="stat-label">Задано вопросов</div>
+                </div>
+                
+                <div class="stat-card">
+                    <i class="fas fa-check-circle fa-2x"></i>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Получено ответов</div>
+                </div>
+                
+                <div class="stat-card">
+                    <i class="fas fa-book fa-2x"></i>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Выполнено заданий</div>
+                </div>
+                
+                <div class="stat-card">
+                    <i class="fas fa-clock fa-2x"></i>
+                    <div class="stat-value">25ч</div>
+                    <div class="stat-label">Время в системе</div>
+                </div>
+            </div>
+            
+            <div class="profile-form">
+                <h3><i class="fas fa-chart-line"></i> Активность по дням</h3>
+                <p>График вашей активности в системе за последнюю неделю</p>
+                
+                <div style="height: 200px; background: #f8fafc; border-radius: 12px; display: flex; align-items: flex-end; padding: 20px; gap: 10px; margin-top: 20px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div style="height: 80%; width: 30px; background: #f59e0b; border-radius: 6px;"></div>
+                        <div style="margin-top: 10px; font-size: 12px;">Пн</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div style="height: 60%; width: 30px; background: #f59e0b; border-radius: 6px;"></div>
+                        <div style="margin-top: 10px; font-size: 12px;">Вт</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div style="height: 90%; width: 30px; background: #f59e0b; border-radius: 6px;"></div>
+                        <div style="margin-top: 10px; font-size: 12px;">Ср</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div style="height: 40%; width: 30px; background: #f59e0b; border-radius: 6px;"></div>
+                        <div style="margin-top: 10px; font-size: 12px;">Чт</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div style="height: 70%; width: 30px; background: #f59e0b; border-radius: 6px;"></div>
+                        <div style="margin-top: 10px; font-size: 12px;">Пт</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div style="height: 30%; width: 30px; background: #f59e0b; border-radius: 6px;"></div>
+                        <div style="margin-top: 10px; font-size: 12px;">Сб</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div style="height: 20%; width: 30px; background: #f59e0b; border-radius: 6px;"></div>
+                        <div style="margin-top: 10px; font-size: 12px;">Вс</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ВКЛАДКА: ДОСТИЖЕНИЯ -->
+        <div id="achievements" class="tab-content">
+            <div class="profile-form">
+                <h3><i class="fas fa-trophy"></i> Мои достижения</h3>
+                <p>Зарабатывайте достижения, активно используя платформу</p>
+                
+                <div class="achievements">
+                    <div class="achievement">
+                        <i class="fas fa-robot"></i>
+                        <div style="font-weight: 600;">Первый вопрос</div>
+                        <div style="font-size: 12px; color: #64748b;">Задать вопрос</div>
+                    </div>
+                    
+                    <div class="achievement">
+                        <i class="fas fa-comments"></i>
+                        <div style="font-weight: 600;">Активный диалог</div>
+                        <div style="font-size: 12px; color: #64748b;">10 сообщений</div>
+                    </div>
+                    
+                    <div class="achievement">
+                        <i class="fas fa-check-double"></i>
+                        <div style="font-weight: 600;">Задачник</div>
+                        <div style="font-size: 12px; color: #64748b;">5 заданий</div>
+                    </div>
+                    
+                    <div class="achievement locked">
+                        <i class="fas fa-user-friends"></i>
+                        <div style="font-weight: 600;">Дружелюбный</div>
+                        <div style="font-size: 12px; color: #64748b;">3 друга</div>
+                    </div>
+                    
+                    <div class="achievement locked">
+                        <i class="fas fa-brain"></i>
+                        <div style="font-weight: 600;">Эрудит</div>
+                        <div style="font-size: 12px; color: #64748b;">50 вопросов</div>
+                    </div>
+                    
+                    <div class="achievement locked">
+                        <i class="fas fa-graduation-cap"></i>
+                        <div style="font-weight: 600;">Отличник</div>
+                        <div style="font-size: 12px; color: #64748b;">Уровень 20</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Главная</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+            <i class="fas fa-robot nav-icon"></i>
+            <span>Лео</span>
+        </a>
+        <a href="friends.html" class="nav-item">
+            <i class="fas fa-users nav-icon"></i>
+            <span>Друзья</span>
+        </a>
+        <a href="schedule.html" class="nav-item">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span>Расписание</span>
+        </a>
+        <a href="profile.html" class="nav-item active">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Профиль</span>
+        </a>
+    </nav>
+
+    <script>
+        // Переключение вкладок профиля
+        function switchProfileTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убрать активный класс у всех кнопок
+            document.querySelectorAll('.profile-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabName).classList.add('active');
+            
+            // Активировать кнопку
+            event.target.classList.add('active');
+        }
+        
+        // Подсчет символов в описании
+        document.getElementById('description').addEventListener('input', function(e) {
+            const count = e.target.value.length;
+            document.getElementById('charCount').textContent = count;
+            
+            if (count > 90) {
+                document.getElementById('charCount').style.color = '#ef4444';
+            } else if (count > 70) {
+                document.getElementById('charCount').style.color = '#f59e0b';
+            } else {
+                document.getElementById('charCount').style.color = '#64748b';
+            }
+        });
+        
+        // Переключение видимости пароля
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = event.target;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.innerHTML = '<i class="fas fa-eye-slash"></i> Скрыть пароль';
+            } else {
+                input.type = 'password';
+                toggle.innerHTML = '<i class="fas fa-eye"></i> Показать пароль';
+            }
+        }
+        
+        // Сохранение профиля
+        function saveProfile() {
+            const lastName = document.getElementById('lastName').value;
+            const firstName = document.getElementById('firstName').value;
+            const nickname = document.getElementById('nickname').value;
+            const description = document.getElementById('description').value;
+            
+            if (!lastName || !firstName) {
+                alert('⚠️ Заполните обязательные поля: Фамилия и Имя');
+                return;
+            }
+            
+            // Проверка пароля если меняется
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                alert('⚠️ Пароли не совпадают!');
+                return;
+            }
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('user_profile', JSON.stringify({
+                lastName,
+                firstName,
+                nickname,
+                description,
+                updated: new Date().toISOString()
+            }));
+            
+            alert('✅ Профиль успешно сохранен!');
+            
+            // Обновляем аватар
+            if (firstName && lastName) {
+                const avatar = firstName[0] + lastName[0];
+                document.querySelector('.profile-avatar').textContent = avatar;
+            }
+        }
+        
+        // Отмена редактирования
+        function cancelEdit() {
+            if (confirm('Отменить изменения?')) {
+                // Загружаем сохраненные данные
+                const saved = localStorage.getItem('user_profile');
+                if (saved) {
+                    const profile = JSON.parse(saved);
+                    document.getElementById('lastName').value = profile.lastName || '';
+                    document.getElementById('firstName').value = profile.firstName || '';
+                    document.getElementById('nickname').value = profile.nickname || '';
+                    document.getElementById('description').value = profile.description || '';
+                }
+            }
+        }
+        
+        // Загрузка сохраненного профиля при запуске
+        document.addEventListener('DOMContentLoaded', function() {
+            const saved = localStorage.getItem('user_profile');
+            if (saved) {
+                try {
+                    const profile = JSON.parse(saved);
+                    document.getElementById('lastName').value = profile.lastName || 'Усков';
+                    document.getElementById('firstName').value = profile.firstName || 'Максим';
+                    document.getElementById('nickname').value = profile.nickname || '';
+                    document.getElementById('description').value = profile.description || 'Ученик 7Б класса, увлекаюсь программированием и математикой';
+                    
+                    // Обновляем счетчик символов
+                    const count = profile.description ? profile.description.length : 0;
+                    document.getElementById('charCount').textContent = count;
+                } catch (e) {
+                    console.error('Ошибка загрузки профиля:', e);
+                }
+            }
+            
+            // Устанавливаем максимальную дату рождения (минимум 10 лет)
+            const today = new Date();
+            const minDate = new Date(today.getFullYear() - 10, today.getMonth(), today.getDate());
+            document.getElementById('birthDate').max = minDate.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>
