@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Домашние задания - Лео</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .homework-header {
+            background: linear-gradient(135deg, #10b981, #0d9488);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .homework-container {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+        
+        .homework-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #10b981;
+            color: white;
+        }
+        
+        .homework-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #10b981;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .homework-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .homework-card.urgent {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        }
+        
+        .homework-card.completed {
+            border-left-color: #d1d5db;
+            opacity: 0.8;
+        }
+        
+        .subject-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .math { background: #dbeafe; color: #1d4ed8; }
+        .physics { background: #f3e8ff; color: #7c3aed; }
+        .russian { background: #fef3c7; color: #d97706; }
+        .chemistry { background: #dcfce7; color: #166534; }
+        .biology { background: #f0f9ff; color: #0369a1; }
+        
+        .homework-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px 0 5px 0;
+            color: #1e293b;
+        }
+        
+        .homework-desc {
+            color: #64748b;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .homework-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .deadline {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ef4444;
+            font-weight: 600;
+        }
+        
+        .from-teacher {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .action-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+        }
+        
+        .no-homework {
+            text-align: center;
+            padding: 50px 20px;
+            color: #64748b;
+        }
+        
+        .no-homework i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+        
+        .work-in-progress {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .work-in-progress::before {
+            content: '🚧';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            opacity: 0.5;
+        }
+        
+        .work-in-progress::after {
+            content: '🔨';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 24px;
+            opacity: 0.5;
+        }
+        
+        .progress-title {
+            color: #92400e;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-desc {
+            color: #92400e;
+            margin-bottom: 15px;
+        }
+        
+        .progress-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .feature {
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: left;
+        }
+        
+        .feature i {
+            color: #f59e0b;
+            margin-right: 10px;
+        }
+        
+        .add-homework-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #10b981, #0da271);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        .add-homework-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #10b981;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="homework-header">
+        <div class="user-info">
+            <div class="avatar">ДЗ</div>
+            <div class="user-details">
+                <h2>Домашние задания</h2>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>Актуальные задания • 4 предмета</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="homework-container">
+        <div class="stats-card">
+            <div class="stat-item">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Всего заданий</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Выполнено</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2</div>
+                <div class="stat-label">На проверке</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Просрочено</div>
+            </div>
+        </div>
+        
+        <div class="homework-filter">
+            <button class="filter-btn active" onclick="filterHomework('all')">Все</button>
+            <button class="filter-btn" onclick="filterHomework('pending')">Текущие</button>
+            <button class="filter-btn" onclick="filterHomework('completed')">Выполнено</button>
+            <button class="filter-btn" onclick="filterHomework('math')">Математика</button>
+            <button class="filter-btn" onclick="filterHomework('physics')">Физика</button>
+            <button class="filter-btn" onclick="filterHomework('russian')">Русский</button>
+        </div>
+        
+        <!-- РАЗДЕЛ: В РАЗРАБОТКЕ -->
+        <div class="work-in-progress">
+            <h2 class="progress-title">🚧 Раздел в активной разработке!</h2>
+            <p class="progress-desc">Мы активно работаем над улучшением этого раздела. Скоро здесь появятся новые возможности!</p>
+            
+            <div class="progress-features">
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Автопроверка заданий</strong>
+                    <p>AI-проверка домашних работ</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-robot"></i>
+                    <strong>Помощь от Лео</strong>
+                    <p>Пошаговое решение задач</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-line"></i>
+                    <strong>Статистика прогресса</strong>
+                    <p>Графики успеваемости</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-bell"></i>
+                    <strong>Уведомления</strong>
+                    <p>Напоминания о дедлайнах</p>
+                </div>
+            </div>
+            
+            <button class="action-btn mt-3" style="background: #f59e0b;">
+                <i class="fas fa-lightbulb"></i> Предложить идею
+            </button>
+        </div>
+        
+        <!-- ЗАДАНИЕ 1: МАТЕМАТИКА -->
+        <div class="homework-card" data-subject="math" data-status="pending">
+            <div class="subject-badge math">
+                <i class="fas fa-calculator"></i> Математика
+            </div>
+            <h3 class="homework-title">Дроби и их сокращение</h3>
+            <p class="homework-desc">Практика по сокращению дробей. Упражнения 1-15 на стр. 78-79 учебника.</p>
+            
+            <div class="homework-meta">
+                <div class="from-teacher">
+                    <i class="fas fa-chalkboard-teacher"></i> От: Лео
+                </div>
+                <div class="deadline">
+                    <i class="fas fa-clock"></i> До: 04.12.2025
+                </div>
+            </div>
+            
+            <button class="action-btn mt-2" onclick="startHomework('math-1')">
+                <i class="fas fa-play"></i> Решить задание
+            </button>
+        </div>
+        
+        <!-- ЗАДАНИЕ 2: ФИЗИКА -->
+        <div class="homework-card urgent" data-subject="physics" data-status="pending">
+            <div class="subject-badge physics">
+                <i class="fas fa-atom"></i> Физика
+            </div>
+            <h3 class="homework-title">Второй закон Ньютона</h3>
+            <p class="homework-desc">2 задачи на применение второго закона Ньютона. Задачи повышенной сложности.</p>
+            
+            <div class="homework-meta">
+                <div class="from-teacher">
+                    <i class="fas fa-chalkboard-teacher"></i> От: Лео
+                </div>
+                <div class="deadline">
+                    <i class="fas fa-exclamation-circle"></i> СРОЧНО! До: 03.12.2025
+                </div>
+            </div>
+            
+            <button class="action-btn mt-2" onclick="startHomework('physics-1')">
+                <i class="fas fa-play"></i> Решить задание
+            </button>
+        </div>
+        
+        <!-- ЗАДАНИЕ 3: РУССКИЙ ЯЗЫК -->
+        <div class="homework-card completed" data-subject="russian" data-status="completed">
+            <div class="subject-badge russian">
+                <i class="fas fa-language"></i> Русский язык
+            </div>
+            <h3 class="homework-title">Правила русского языка</h3>
+            <p class="homework-desc">Согласование существительного и прилагательного. Упражнения 45-60.</p>
+            
+            <div class="homework-meta">
+                <div class="from-teacher">
+                    <i class="fas fa-chalkboard-teacher"></i> От: Лео
+                </div>
+                <div>
+                    <span style="color: #10b981; font-weight: 600;">
+                        <i class="fas fa-check-circle"></i> Выполнено
+                    </span>
+                </div>
+            </div>
+            
+            <button class="action-btn mt-2" style="background: #6b7280;">
+                <i class="fas fa-eye"></i> Посмотреть решение
+            </button>
+        </div>
+        
+        <!-- ЗАДАНИЕ 4: ХИМИЯ -->
+        <div class="homework-card" data-subject="chemistry" data-status="pending">
+            <div class="subject-badge chemistry">
+                <i class="fas fa-flask"></i> Химия
+            </div>
+            <h3 class="homework-title">Химические элементы</h3>
+            <p class="homework-desc">Изучение таблицы Менделеева. 2 задачи на определение свойств элементов.</p>
+            
+            <div class="homework-meta">
+                <div class="from-teacher">
+                    <i class="fas fa-chalkboard-teacher"></i> Авто-генерация
+                </div>
+                <div class="deadline">
+                    <i class="fas fa-clock"></i> До: 05.12.2025
+                </div>
+            </div>
+            
+            <button class="action-btn mt-2" onclick="startHomework('chemistry-1')">
+                <i class="fas fa-play"></i> Решить задание
+            </button>
+        </div>
+        
+        <!-- БИОЛОГИЯ (мини-карточка) -->
+        <div class="homework-card" style="border-left-color: #0369a1;">
+            <div class="subject-badge biology">
+                <i class="fas fa-dna"></i> Биология
+            </div>
+            <h3 class="homework-title">Строение клетки</h3>
+            <p class="homework-desc">Подготовка к лабораторной работе. Изучить материал стр. 56-67.</p>
+            
+            <div class="homework-meta">
+                <div>На проверке у учителя</div>
+                <div style="color: #3b82f6;">
+                    <i class="fas fa-hourglass-half"></i> Ожидает оценки
+                </div>
+            </div>
+        </div>
+        
+        <div class="no-homework hidden" id="noHomework">
+            <i class="fas fa-check-double"></i>
+            <h3>Все задания выполнены!</h3>
+            <p>Молодец! Ты выполнил все домашние задания на этой неделе.</p>
+            <button class="action-btn" onclick="filterHomework('all')">
+                <i class="fas fa-redo"></i> Показать все задания
+            </button>
+        </div>
+    </div>
+    
+    <button class="add-homework-btn" onclick="addHomework()">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Навигация -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Главная</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+            <i class="fas fa-robot nav-icon"></i>
+            <span>Лео</span>
+        </a>
+        <a href="friends.html" class="nav-item">
+            <i class="fas fa-users nav-icon"></i>
+            <span>Друзья</span>
+        </a>
+        <a href="schedule.html" class="nav-item">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span>Расписание</span>
+        </a>
+        <a href="homework.html" class="nav-item active">
+            <i class="fas fa-book nav-icon"></i>
+            <span>Домашка</span>
+        </a>
+    </nav>
+
+    <script>
+        // Фильтрация заданий
+        function filterHomework(filter) {
+            // Обновляем активную кнопку
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const cards = document.querySelectorAll('.homework-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const subject = card.getAttribute('data-subject');
+                const status = card.getAttribute('data-status');
+                
+                let shouldShow = false;
+                
+                if (filter === 'all') {
+                    shouldShow = true;
+                } else if (filter === 'pending') {
+                    shouldShow = status === 'pending';
+                } else if (filter === 'completed') {
+                    shouldShow = status === 'completed';
+                } else {
+                    shouldShow = subject === filter;
+                }
+                
+                if (shouldShow) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Показываем/скрываем сообщение "нет заданий"
+            const noHomework = document.getElementById('noHomework');
+            if (visibleCount === 0 && filter !== 'all') {
+                noHomework.classList.remove('hidden');
+            } else {
+                noHomework.classList.add('hidden');
+            }
+        }
+        
+        // Начать выполнение задания
+        function startHomework(homeworkId) {
+            alert(`🚀 Начинаем выполнение задания: ${homeworkId}`);
+            // В реальном приложении здесь переход к решению
+        }
+        
+        // Добавить новое задание
+        function addHomework() {
+            const subject = prompt('Предмет:', 'Математика');
+            const title = prompt('Название задания:', 'Новая задача');
+            const deadline = prompt('Срок выполнения (ДД.ММ.ГГГГ):', '10.12.2025');
+            
+            if (subject && title) {
+                alert(`✅ Задание "${title}" по предмету "${subject}" добавлено!`);
+                // В реальном приложении здесь сохранение в базу
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            // Помечаем просроченные задания
+            const today = new Date();
+            const deadlineElements = document.querySelectorAll('.deadline');
+            
+            deadlineElements.forEach(el => {
+                const deadlineText = el.textContent;
+                if (deadlineText.includes('СРОЧНО') || deadlineText.includes('Вчера')) {
+                    el.parentElement.parentElement.classList.add('urgent');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
