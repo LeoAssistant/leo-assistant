@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание - Лео</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .schedule-header {
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .schedule-container {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+        
+        .schedule-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .drive-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px dashed #0ea5e9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #0369a1;
+            transition: all 0.3s;
+        }
+        
+        .drive-link:hover {
+            background: #dbeafe;
+            transform: translateY(-2px);
+        }
+        
+        .drive-icon {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .day-schedule {
+            margin-top: 25px;
+        }
+        
+        .day-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .day-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .day-date {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .lesson {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s;
+        }
+        
+        .lesson:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+        
+        .lesson-time {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .lesson-details h4 {
+            margin: 0 0 5px 0;
+            color: #1e293b;
+        }
+        
+        .lesson-room {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .room-icon {
+            color: #3b82f6;
+        }
+        
+        .current-lesson {
+            background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+            border-left-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        }
+        
+        .week-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .week-btn {
+            background: #f1f5f9;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.3s;
+        }
+        
+        .week-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+        
+        .current-week {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .schedule-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .schedule-tab {
+            padding: 12px 20px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .schedule-tab.active {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .no-lessons {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+        
+        .no-lessons i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+        
+        .schedule-notice {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="schedule-header">
+        <div class="user-info">
+            <div class="avatar">РА</div>
+            <div class="user-details">
+                <h2>Актуальное расписание</h2>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>Все изменения в Google Drive</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="schedule-container">
+        <a href="https://drive.google.com" target="_blank" class="drive-link">
+            <div class="drive-icon">
+                <i class="fab fa-google-drive"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0 0 5px 0;">Открыть в Google Drive</h3>
+                <p style="margin: 0; font-size: 14px;">Все изменения и обновления расписания</p>
+            </div>
+        </a>
+        
+        <div class="schedule-notice">
+            <i class="fas fa-info-circle"></i> Предварительное расписание - возможны изменения
+        </div>
+        
+        <div class="week-navigation">
+            <button class="week-btn" onclick="prevWeek()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="current-week" id="currentWeek">
+                Неделя 48 • 2-8 декабря 2025
+            </div>
+            <button class="week-btn" onclick="nextWeek()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <div class="schedule-tabs">
+            <button class="schedule-tab active" onclick="switchDay('monday')">Понедельник</button>
+            <button class="schedule-tab" onclick="switchDay('tuesday')">Вторник</button>
+            <button class="schedule-tab" onclick="switchDay('wednesday')">Среда</button>
+            <button class="schedule-tab" onclick="switchDay('thursday')">Четверг</button>
+            <button class="schedule-tab" onclick="switchDay('friday')">Пятница</button>
+            <button class="schedule-tab" onclick="switchDay('saturday')">Суббота</button>
+        </div>
+        
+        <!-- ПОНЕДЕЛЬНИК -->
+        <div id="monday" class="tab-content active">
+            <div class="day-schedule">
+                <div class="day-header">
+                    <div class="day-name">Понедельник</div>
+                    <div class="day-date">2 декабря</div>
+                </div>
+                
+                <div class="lesson current-lesson">
+                    <div class="lesson-time">13:10–13:50</div>
+                    <div class="lesson-details">
+                        <h4>История</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 16 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">14:00–14:40</div>
+                    <div class="lesson-details">
+                        <h4>Разговоры о важном</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 21 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">14:50–15:30</div>
+                    <div class="lesson-details">
+                        <h4>Биология</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 21 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">15:40–16:20</div>
+                    <div class="lesson-details">
+                        <h4>Русский язык</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 32 Кабинет
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ВТОРНИК -->
+        <div id="tuesday" class="tab-content">
+            <div class="day-schedule">
+                <div class="day-header">
+                    <div class="day-name">Вторник</div>
+                    <div class="day-date">3 декабря</div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">08:30–09:10</div>
+                    <div class="lesson-details">
+                        <h4>Математика</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 24 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">09:20–10:00</div>
+                    <div class="lesson-details">
+                        <h4>Физика</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 18 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">10:20–11:00</div>
+                    <div class="lesson-details">
+                        <h4>Литература</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 32 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">11:10–11:50</div>
+                    <div class="lesson-details">
+                        <h4>Английский язык</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 15 Кабинет
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- СРЕДА -->
+        <div id="wednesday" class="tab-content">
+            <div class="day-schedule">
+                <div class="day-header">
+                    <div class="day-name">Среда</div>
+                    <div class="day-date">4 декабря</div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">08:30–09:10</div>
+                    <div class="lesson-details">
+                        <h4>География</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 22 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">09:20–10:00</div>
+                    <div class="lesson-details">
+                        <h4>Химия</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 17 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">10:20–11:00</div>
+                    <div class="lesson-details">
+                        <h4>Физкультура</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ Спортзал
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЧЕТВЕРГ -->
+        <div id="thursday" class="tab-content">
+            <div class="day-schedule">
+                <div class="day-header">
+                    <div class="day-name">Четверг</div>
+                    <div class="day-date">5 декабря</div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">08:30–09:10</div>
+                    <div class="lesson-details">
+                        <h4>Информатика</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 12 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">09:20–10:00</div>
+                    <div class="lesson-details">
+                        <h4>Алгебра</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 24 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">10:20–11:00</div>
+                    <div class="lesson-details">
+                        <h4>Обществознание</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 16 Кабинет
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ПЯТНИЦА -->
+        <div id="friday" class="tab-content">
+            <div class="day-schedule">
+                <div class="day-header">
+                    <div class="day-name">Пятница</div>
+                    <div class="day-date">6 декабря</div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">08:30–09:10</div>
+                    <div class="lesson-details">
+                        <h4>Русский язык</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 32 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">09:20–10:00</div>
+                    <div class="lesson-details">
+                        <h4>Геометрия</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 24 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">10:20–11:00</div>
+                    <div class="lesson-details">
+                        <h4>Биология</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 21 Кабинет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lesson">
+                    <div class="lesson-time">11:10–11:50</div>
+                    <div class="lesson-details">
+                        <h4>Классный час</h4>
+                        <div class="lesson-room">
+                            <i class="fas fa-door-closed room-icon"></i>
+                            ♦ 21 Кабинет
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- СУББОТА -->
+        <div id="saturday" class="tab-content">
+            <div class="day-schedule">
+                <div class="day-header">
+                    <div class="day-name">Суббота</div>
+                    <div class="day-date">7 декабря</div>
+                </div>
+                
+                <div class="no-lessons">
+                    <i class="fas fa-smile-beam"></i>
+                    <h3>Выходной!</h3>
+                    <p>Сегодня нет занятий</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="schedule-card">
+            <h3><i class="fas fa-calendar-alt"></i> Расписание 7Б класса на неделю</h3>
+            <p>Обновлено: 02.12.2025 21:05</p>
+            <button class="btn mt-2" onclick="downloadSchedule()">
+                <i class="fas fa-download"></i> Скачать расписание (PDF)
+            </button>
+        </div>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Главная</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+            <i class="fas fa-robot nav-icon"></i>
+            <span>Лео</span>
+        </a>
+        <a href="friends.html" class="nav-item">
+            <i class="fas fa-users nav-icon"></i>
+            <span>Друзья</span>
+        </a>
+        <a href="schedule.html" class="nav-item active">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span>Расписание</span>
+        </a>
+        <a href="homework.html" class="nav-item">
+            <i class="fas fa-book nav-icon"></i>
+            <span>Домашка</span>
+        </a>
+    </nav>
+
+    <script>
+        // Переключение дней
+        function switchDay(day) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убрать активный класс у всех кнопок
+            document.querySelectorAll('.schedule-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(day).classList.add('active');
+            
+            // Активировать кнопку
+            event.target.classList.add('active');
+        }
+        
+        // Навигация по неделям
+        let currentWeek = 48;
+        const weeks = [
+            { id: 47, name: 'Неделя 47 • 25 ноября - 1 декабря' },
+            { id: 48, name: 'Неделя 48 • 2-8 декабря 2025' },
+            { id: 49, name: 'Неделя 49 • 9-15 декабря' },
+            { id: 50, name: 'Неделя 50 • 16-22 декабря' }
+        ];
+        
+        function prevWeek() {
+            if (currentWeek > 47) {
+                currentWeek--;
+                updateWeekDisplay();
+            }
+        }
+        
+        function nextWeek() {
+            if (currentWeek < 50) {
+                currentWeek++;
+                updateWeekDisplay();
+            }
+        }
+        
+        function updateWeekDisplay() {
+            const week = weeks.find(w => w.id === currentWeek);
+            if (week) {
+                document.getElementById('currentWeek').textContent = week.name;
+            }
+        }
+        
+        // Скачать расписание
+        function downloadSchedule() {
+            alert('📥 Загрузка расписания...');
+            // В реальном приложении здесь будет генерация PDF
+        }
+        
+        // Автоматически показывать текущий день
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().getDay();
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            
+            // Если сегодня воскресенье, показываем понедельник
+            const dayToShow = today === 0 ? 'monday' : days[today];
+            
+            // Активируем соответствующую вкладку
+            switchDay(dayToShow);
+            
+            // Находим кнопку и активируем
+            document.querySelectorAll('.schedule-tab').forEach(btn => {
+                if (btn.getAttribute('onclick') === `switchDay('${dayToShow}')`) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Отмечаем текущий урок
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            document.querySelectorAll('.lesson').forEach(lesson => {
+                const timeText = lesson.querySelector('.lesson-time').textContent;
+                const [start, end] = timeText.split('–').map(t => {
+                    const [hours, minutes] = t.trim().split(':').map(Number);
+                    return hours * 60 + minutes;
+                });
+                
+                const currentTime = currentHour * 60 + currentMinute;
+                
+                if (currentTime >= start && currentTime <= end) {
+                    lesson.classList.add('current-lesson');
+                    lesson.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
