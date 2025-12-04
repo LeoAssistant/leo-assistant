@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Друзья - Лео</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .friends-header {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .friends-container {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+        
+        .friends-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .friend-tab {
+            padding: 12px 20px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .friend-tab.active {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .friend-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .friend-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .friend-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .friend-info {
+            flex: 1;
+        }
+        
+        .friend-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .friend-details {
+            font-size: 14px;
+            color: #64748b;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .friend-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+        
+        .status-online {
+            color: #10b981;
+        }
+        
+        .status-offline {
+            color: #94a3b8;
+        }
+        
+        .friend-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .friend-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .chat-btn {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        
+        .remove-btn {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .add-friend-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px dashed #cbd5e1;
+        }
+        
+        .add-friend-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .add-friend-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        
+        .no-friends {
+            text-align: center;
+            padding: 50px 20px;
+            color: #64748b;
+        }
+        
+        .no-friends i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+        
+        .friend-requests {
+            margin-top: 25px;
+        }
+        
+        .request-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .friends-search {
+            margin-bottom: 20px;
+        }
+        
+        .friends-search input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        
+        .friends-count {
+            background: #8b5cf6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="friends-header">
+        <div class="user-info">
+            <div class="avatar">УМ</div>
+            <div class="user-details">
+                <h2>Усков Максим</h2>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>ONLINE • <span class="friends-count">0 друзей</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="friends-container">
+        <div class="friends-tabs">
+            <button class="friend-tab active" onclick="switchTab('friends')">Друзья</button>
+            <button class="friend-tab" onclick="switchTab('requests')">Запросы</button>
+            <button class="friend-tab" onclick="switchTab('find')">Найти друзей</button>
+            <button class="friend-tab" onclick="switchTab('leaderboard')">Рейтинг</button>
+        </div>
+        
+        <div class="friends-search">
+            <input type="text" placeholder="Поиск друзей по имени или ID..." id="friendSearch">
+        </div>
+        
+        <!-- ВКЛАДКА: ДРУЗЬЯ -->
+        <div id="friends" class="tab-content active">
+            <div class="no-friends">
+                <i class="fas fa-user-friends"></i>
+                <h3>Нет друзей в списке</h3>
+                <p>Добавь друзей по ID или найди их в рейтинге</p>
+            </div>
+            
+            <!-- Пример друга (закомментирован) -->
+            <!--
+            <div class="friend-card">
+                <div class="friend-avatar">РА</div>
+                <div class="friend-info">
+                    <div class="friend-name">Руднева Анна</div>
+                    <div class="friend-details">
+                        <span>ID: 81341</span>
+                        <span>Уровень: 5</span>
+                        <div class="friend-status status-online">
+                            <div class="status-dot" style="background: #10b981;"></div>
+                            ONLINE
+                        </div>
+                    </div>
+                </div>
+                <div class="friend-actions">
+                    <button class="friend-btn chat-btn" title="Написать">
+                        <i class="fas fa-comment"></i>
+                    </button>
+                    <button class="friend-btn remove-btn" title="Удалить">
+                        <i class="fas fa-user-minus"></i>
+                    </button>
+                </div>
+            </div>
+            -->
+        </div>
+        
+        <!-- ВКЛАДКА: ДОБАВИТЬ ДРУГА -->
+        <div id="find" class="tab-content">
+            <div class="add-friend-section">
+                <h3><i class="fas fa-user-plus"></i> Добавить друга по ID</h3>
+                <p>Введи ID профиля друга, чтобы отправить запрос</p>
+                
+                <div class="add-friend-input">
+                    <input type="text" 
+                           id="friendIdInput" 
+                           placeholder="Введи ID друга..."
+                           value="83386">
+                    <button class="action-btn" onclick="sendFriendRequest()">
+                        <i class="fas fa-plus"></i> Добавить
+                    </button>
+                </div>
+                
+                <div style="margin-top: 15px; font-size: 14px; color: #64748b;">
+                    <i class="fas fa-info-circle"></i> Твой ID: <strong>30683</strong> - поделись им с друзьями
+                </div>
+            </div>
+            
+            <div class="friend-requests">
+                <h4><i class="fas fa-clock"></i> Ожидают подтверждения</h4>
+                
+                <div class="request-card">
+                    <div class="friend-info">
+                        <div class="friend-name">Золотых Давид</div>
+                        <div class="friend-details">
+                            <span>ID: 83386</span>
+                            <span>Класс: 7Б</span>
+                        </div>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b;">
+                            Хочет добавить вас в друзья
+                        </p>
+                    </div>
+                    <div class="request-actions">
+                        <button class="action-btn" style="background: #10b981;" onclick="acceptRequest(83386)">
+                            <i class="fas fa-check"></i> Принять
+                        </button>
+                        <button class="action-btn" style="background: #ef4444;" onclick="declineRequest(83386)">
+                            <i class="fas fa-times"></i> Отклонить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ВКЛАДКА: РЕЙТИНГ -->
+        <div id="leaderboard" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-trophy"></i> Топ учеников 7Б</h2>
+                <p>Рейтинг по активности и успеваемости</p>
+                
+                <div class="ranking">
+                    <div class="ranking-item">
+                        <div class="rank-number">1</div>
+                        <div class="ranking-details">
+                            <h4>Усков Максим</h4>
+                            <p>ID: 30683 • Уровень 11</p>
+                        </div>
+                        <div class="points">500 ✈</div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="rank-number">2</div>
+                        <div class="ranking-details">
+                            <h4>Шиляева Луиза</h4>
+                            <p>ID: 80344 • Уровень 8</p>
+                        </div>
+                        <div class="points">350 ✈</div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="rank-number">3</div>
+                        <div class="ranking-details">
+                            <h4>Руднева Анна</h4>
+                            <p>ID: 81341 • Уровень 5</p>
+                        </div>
+                        <div class="points">200 ✈</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank-number">4</div>
+                        <div class="ranking-details">
+                            <h4>Золотых Давид</h4>
+                            <p>ID: 83386 • Уровень 4</p>
+                        </div>
+                        <div class="points">150 ✈</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank-number">5</div>
+                        <div class="ranking-details">
+                            <h4>Иванов Алексей</h4>
+                            <p>ID: 78901 • Уровень 3</p>
+                        </div>
+                        <div class="points">100 ✈</div>
+                    </div>
+                </div>
+                
+                <button class="btn mt-2" onclick="addFromLeaderboard()">
+                    <i class="fas fa-user-plus"></i> Добавить из рейтинга
+                </button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3><i class="fas fa-users"></i> Рекомендации друзей</h3>
+            <p>Добавь друзей из своего класса для совместной учёбы!</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div style="text-align: center; padding: 15px; background: #f8fafc; border-radius: 12px;">
+                    <div class="friend-avatar" style="margin: 0 auto 10px auto; width: 40px; height: 40px;">ЗД</div>
+                    <div style="font-weight: 600;">Золотых Давид</div>
+                    <div style="font-size: 12px; color: #64748b;">ID: 83386</div>
+                    <button class="action-btn" style="padding: 8px 12px; font-size: 12px; margin-top: 8px;">
+                        <i class="fas fa-user-plus"></i> Добавить
+                    </button>
+                </div>
+                
+                <div style="text-align: center; padding: 15px; background: #f8fafc; border-radius: 12px;">
+                    <div class="friend-avatar" style="margin: 0 auto 10px auto; width: 40px; height: 40px;">РА</div>
+                    <div style="font-weight: 600;">Руднева Анна</div>
+                    <div style="font-size: 12px; color: #64748b;">ID: 81341</div>
+                    <button class="action-btn" style="padding: 8px 12px; font-size: 12px; margin-top: 8px;">
+                        <i class="fas fa-user-plus"></i> Добавить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Главная</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+            <i class="fas fa-robot nav-icon"></i>
+            <span>Лео</span>
+        </a>
+        <a href="friends.html" class="nav-item active">
+            <i class="fas fa-users nav-icon"></i>
+            <span>Друзья</span>
+        </a>
+        <a href="schedule.html" class="nav-item">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span>Расписание</span>
+        </a>
+        <a href="homework.html" class="nav-item">
+            <i class="fas fa-book nav-icon"></i>
+            <span>Домашка</span>
+        </a>
+    </nav>
+
+    <script>
+        // Переключение вкладок
+        function switchTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убрать активный класс у всех кнопок
+            document.querySelectorAll('.friend-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabName).classList.add('active');
+            
+            // Активировать кнопку
+            event.target.classList.add('active');
+        }
+        
+        // Отправить запрос в друзья
+        function sendFriendRequest() {
+            const friendId = document.getElementById('friendIdInput').value.trim();
+            
+            if (!friendId || friendId.length < 5) {
+                alert('⚠️ Введите корректный ID друга (минимум 5 цифр)');
+                return;
+            }
+            
+            alert(`📩 Запрос в друзья отправлен пользователю с ID: ${friendId}`);
+            document.getElementById('friendIdInput').value = '';
+        }
+        
+        // Принять запрос
+        function acceptRequest(userId) {
+            alert(`✅ Вы приняли запрос в друзья от пользователя ${userId}`);
+            // В реальном приложении здесь обновление списка
+        }
+        
+        // Отклонить запрос
+        function declineRequest(userId) {
+            alert(`❌ Вы отклонили запрос от пользователя ${userId}`);
+            // В реальном приложении здесь обновление списка
+        }
+        
+        // Добавить из рейтинга
+        function addFromLeaderboard() {
+            const userId = prompt('Введите ID пользователя из рейтинга:');
+            if (userId) {
+                sendFriendRequest(userId);
+            }
+        }
+        
+        // Поиск друзей
+        document.getElementById('friendSearch').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            console.log('Поиск:', query);
+            // В реальном приложении здесь фильтрация списка
+        });
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обновляем счетчик друзей
+            const friendsCount = document.querySelectorAll('.friend-card').length;
+            document.querySelector('.friends-count').textContent = `${friendsCount} друзей`;
+        });
+    </script>
+</body>
+</html>
