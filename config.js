@@ -9,7 +9,7 @@ const LEO_CONFIG = {
     // 🔐 ВАШ API КЛЮЧ DEEPSEEK
     // Получите на: https://platform.deepseek.com/api_keys
     // ВСТАВЬТЕ КЛЮЧ СЮДА:
-    DEEPSEEK_API_KEY: "sk-7a79e5877b294b9a9de1d1145f1f4b7f",
+    DEEPSEEK_API_KEY: "sk-7035e985264546b997966c6294ad4f4a",
     
     // Базовая URL API
     DEEPSEEK_API_URL: "https://api.deepseek.com/v1",
