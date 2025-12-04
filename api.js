@@ -467,4 +467,17 @@ window.clearChatHistory = function() {
 window.exportChatData = function() {
     const data = window.leoAssistant.exportData();
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-   
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `leo-chat-export-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    alert('✅ Данные экспортированы в JSON файл');
+};
+
+console.log('✨ api.js loaded successfully');
