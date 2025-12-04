@@ -1,676 +1,426 @@
-// script.js - общие функции для всех страниц
-// Version: 1.0.0
+// ========== УЛУЧШЕННОЕ УПРАВЛЕНИЕ МЕНЮ ==========
 
-console.log('✅ Leo Assistant loaded');
-
-// Глобальные переменные
-let currentUser = {
-    id: 30683,
-    name: 'Усков Максим',
-    level: 11,
-    points: 500,
-    online: true
-};
-
-// ====================
-// СИСТЕМА ХРАНЕНИЯ
-// ====================
-const Storage = {
-    // Сохранить данные
-    save: function(key, data) {
-        try {
-            localStorage.setItem(key, JSON.stringify(data));
-            return true;
-        } catch (e) {
-            console.error('Ошибка сохранения:', e);
-            return false;
-        }
-    },
+// Инициализация меню
+function initMenu() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navContainer = document.querySelector('.nav-container');
+    const menuOverlay = document.querySelector('.menu-overlay');
     
-    // Загрузить данные
-    load: function(key) {
-        try {
-            const data = localStorage.getItem(key);
-            return data ? JSON.parse(data) : null;
-        } catch (e) {
-            console.error('Ошибка загрузки:', e);
-            return null;
+    if (menuToggle && navContainer) {
+        // Создаём оверлей если его нет
+        if (!menuOverlay) {
+            const overlay = document.createElement('div');
+            overlay.className = 'menu-overlay';
+            document.body.appendChild(overlay);
         }
-    },
-    
-    // Удалить данные
-    remove: function(key) {
-        localStorage.removeItem(key);
-    },
-    
-    // Очистить все (осторожно!)
-    clear: function() {
-        if (confirm('Очистить все данные приложения?')) {
-            localStorage.clear();
-            location.reload();
+        
+        const overlay = document.querySelector('.menu-overlay');
+        
+        // Функция переключения меню
+        function toggleMenu() {
+            navContainer.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = navContainer.classList.contains('active') ? 'hidden' : '';
         }
-    }
-};
-
-// ====================
-// НАВИГАЦИЯ И UI
-// ====================
-const UI = {
-    // Показать уведомление
-    showNotification: function(message, type = 'info', duration = 3000) {
-        // Удаляем старые уведомления
-        const oldNotifications = document.querySelectorAll('.notification');
-        oldNotifications.forEach(n => n.remove());
         
-        // Создаем новое уведомление
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                <span>${message}</span>
-            </div>
-            <button class="notification-close" onclick="this.parentElement.remove()">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
+        // Обработчики событий
+        menuToggle.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
         
-        // Добавляем стили
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-            color: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            min-width: 300px;
-            max-width: 400px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            z-index: 9999;
-            animation: slideIn 0.3s ease-out;
-        `;
-        
-        // Добавляем в DOM
-        document.body.appendChild(notification);
-        
-        // Автоматическое скрытие
-        if (duration > 0) {
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.style.animation = 'slideOut 0.3s ease-out';
-                    setTimeout(() => notification.remove(), 300);
+        // Закрытие меню при клике на ссылку
+        const navLinks = document.querySelectorAll('.nav-item');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleMenu();
                 }
-            }, duration);
-        }
-        
-        return notification;
-    },
-    
-    // Показать модальное окно
-    showModal: function(title, content, buttons = []) {
-        // Удаляем старые модалки
-        const oldModal = document.querySelector('.modal-overlay');
-        if (oldModal) oldModal.remove();
-        
-        // Создаем модальное окно
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay';
-        modal.innerHTML = `
-            <div class="modal">
-                <div class="modal-header">
-                    <h3>${title}</h3>
-                    <button class="modal-close" onclick="UI.closeModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-content">
-                    ${content}
-                </div>
-                ${buttons.length > 0 ? `
-                <div class="modal-footer">
-                    ${buttons.map(btn => `
-                        <button class="btn ${btn.type || ''}" onclick="${btn.onclick}">
-                            ${btn.icon ? `<i class="fas fa-${btn.icon}"></i>` : ''}
-                            ${btn.text}
-                        </button>
-                    `).join('')}
-                </div>` : ''}
-            </div>
-        `;
-        
-        // Добавляем стили
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            animation: fadeIn 0.3s ease-out;
-            padding: 20px;
-        `;
-        
-        document.body.appendChild(modal);
-        
-        // Блокируем прокрутку body
-        document.body.style.overflow = 'hidden';
-        
-        return modal;
-    },
-    
-    // Закрыть модальное окно
-    closeModal: function() {
-        const modal = document.querySelector('.modal-overlay');
-        if (modal) {
-            modal.style.animation = 'fadeOut 0.3s ease-out';
-            setTimeout(() => modal.remove(), 300);
-            document.body.style.overflow = '';
-        }
-    },
-    
-    // Показать индикатор загрузки
-    showLoader: function(text = 'Загрузка...') {
-        // Удаляем старые лоадеры
-        const oldLoader = document.querySelector('.loader-overlay');
-        if (oldLoader) oldLoader.remove();
-        
-        const loader = document.createElement('div');
-        loader.className = 'loader-overlay';
-        loader.innerHTML = `
-            <div class="loader">
-                <div class="spinner"></div>
-                <div class="loader-text">${text}</div>
-            </div>
-        `;
-        
-        loader.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9998;
-            backdrop-filter: blur(4px);
-        `;
-        
-        document.body.appendChild(loader);
-        return loader;
-    },
-    
-    // Скрыть индикатор загрузки
-    hideLoader: function() {
-        const loader = document.querySelector('.loader-overlay');
-        if (loader) {
-            loader.style.opacity = '0';
-            setTimeout(() => loader.remove(), 300);
-        }
-    },
-    
-    // Анимированное появление элемента
-    fadeIn: function(element, duration = 300) {
-        element.style.opacity = '0';
-        element.style.display = 'block';
-        
-        let opacity = 0;
-        const timer = setInterval(() => {
-            opacity += 16.7 / duration;
-            element.style.opacity = opacity;
-            
-            if (opacity >= 1) {
-                clearInterval(timer);
-            }
-        }, 16.7);
-    },
-    
-    // Анимированное исчезновение элемента
-    fadeOut: function(element, duration = 300) {
-        let opacity = 1;
-        const timer = setInterval(() => {
-            opacity -= 16.7 / duration;
-            element.style.opacity = opacity;
-            
-            if (opacity <= 0) {
-                clearInterval(timer);
-                element.style.display = 'none';
-            }
-        }, 16.7);
-    }
-};
-
-// ====================
-// ФОРМАТИРОВАНИЕ
-// ====================
-const Format = {
-    // Форматирование времени
-    time: function(date = new Date()) {
-        return date.toLocaleTimeString('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit'
+            });
         });
-    },
-    
-    // Форматирование даты
-    date: function(date = new Date()) {
-        return date.toLocaleDateString('ru-RU', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+        
+        // Адаптивное поведение при изменении размера окна
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                navContainer.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
         });
-    },
-    
-    // Относительное время (2 часа назад)
-    relativeTime: function(timestamp) {
-        const now = new Date();
-        const diff = now - new Date(timestamp);
-        
-        const minutes = Math.floor(diff / 60000);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-        
-        if (minutes < 1) return 'только что';
-        if (minutes < 60) return `${minutes} мин назад`;
-        if (hours < 24) return `${hours} ч назад`;
-        if (days < 7) return `${days} дн назад`;
-        
-        return this.date(new Date(timestamp));
-    },
-    
-    // Сокращение больших чисел
-    compactNumber: function(num) {
-        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-        return num.toString();
     }
-};
+    
+    // Активное состояние меню
+    const currentPath = window.location.pathname;
+    const navItems = document.querySelectorAll('.nav-item');
+    
+    navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && currentPath.includes(href.replace('.html', ''))) {
+            item.classList.add('active');
+        }
+    });
+}
 
-// ====================
-// ВАЛИДАЦИЯ
-// ====================
-const Validate = {
-    // Валидация email
-    email: function(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    },
-    
-    // Валидация пароля
-    password: function(password) {
-        return password.length >= 6;
-    },
-    
-    // Валидация ID пользователя
-    userId: function(id) {
-        return /^\d{5,}$/.test(id);
-    },
-    
-    // Валидация API ключа
-    apiKey: function(key) {
-        return key.startsWith('sk-') && key.length > 30;
-    }
-};
+// ========== УЛУЧШЕННАЯ СИСТЕМА УВЕДОМЛЕНИЙ ==========
 
-// ====================
-// API HELPERS
-// ====================
-const Api = {
-    // Обертка для fetch с обработкой ошибок
-    fetch: async function(url, options = {}) {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
-        
-        try {
-            const response = await fetch(url, {
-                ...options,
-                signal: controller.signal
+function showNotification(message, type = 'success', duration = 5000) {
+    // Удаляем старые уведомления
+    const oldNotifications = document.querySelectorAll('.notification');
+    oldNotifications.forEach(notif => {
+        if (notif.dataset.timestamp && Date.now() - parseInt(notif.dataset.timestamp) > 5000) {
+            notif.remove();
+        }
+    });
+    
+    // Создаем новое уведомление
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.dataset.timestamp = Date.now();
+    
+    document.body.appendChild(notification);
+    
+    // Автоматическое удаление
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, duration);
+    
+    // Ручное закрытие
+    notification.addEventListener('click', () => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    });
+}
+
+// ========== УЛУЧШЕННАЯ ФОРМА ВАЛИДАЦИИ ==========
+
+function initFormValidation() {
+    const forms = document.querySelectorAll('form');
+    
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            const inputs = this.querySelectorAll('[required]');
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.style.borderColor = '#ef4444';
+                    
+                    setTimeout(() => {
+                        input.style.borderColor = '';
+                    }, 2000);
+                }
             });
             
-            clearTimeout(timeout);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            if (isValid) {
+                // Эффект загрузки
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="loading"></span> Обработка...';
+                    submitBtn.disabled = true;
+                    
+                    // Имитация отправки
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        showNotification('Успешно сохранено!', 'success');
+                    }, 1500);
+                }
+            } else {
+                showNotification('Заполните все обязательные поля', 'error');
             }
-            
-            const data = await response.json();
-            return { success: true, data };
-            
-        } catch (error) {
-            clearTimeout(timeout);
-            
-            if (error.name === 'AbortError') {
-                return { success: false, error: 'Таймаут запроса' };
-            }
-            
-            return { success: false, error: error.message };
-        }
-    },
+        });
+    });
+}
+
+// ========== УЛУЧШЕННЫЙ СКРОЛЛ ДЛЯ ТАБЛИЦ ==========
+
+function initTableScroll() {
+    const tables = document.querySelectorAll('.admin-table');
     
-    // Запрос к DeepSeek API
-    deepseek: async function(messages, options = {}) {
-        const apiKey = localStorage.getItem('deepseek_api_key');
+    tables.forEach(table => {
+        const container = table.closest('.admin-table-container') || table.parentElement;
         
-        if (!apiKey) {
-            return {
-                success: false,
-                error: 'API ключ не установлен',
-                message: 'Пожалуйста, установите API ключ в настройках'
-            };
+        if (container.scrollWidth > container.clientWidth) {
+            container.style.overflowX = 'auto';
+            container.style.position = 'relative';
+            
+            // Добавляем индикатор прокрутки
+            const scrollIndicator = document.createElement('div');
+            scrollIndicator.className = 'scroll-indicator';
+            scrollIndicator.innerHTML = '<i class="fas fa-chevron-left"></i> Прокрутите в сторону <i class="fas fa-chevron-right"></i>';
+            scrollIndicator.style.cssText = `
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+                background: rgba(59, 130, 246, 0.2);
+                padding: 5px 10px;
+                border-radius: 5px;
+                font-size: 0.8rem;
+                color: #60a5fa;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            `;
+            
+            container.style.position = 'relative';
+            container.appendChild(scrollIndicator);
+            
+            // Убираем индикатор после прокрутки
+            container.addEventListener('scroll', () => {
+                if (container.scrollLeft > 10) {
+                    scrollIndicator.style.opacity = '0';
+                    setTimeout(() => scrollIndicator.remove(), 300);
+                }
+            });
+        }
+    });
+}
+
+// ========== АДАПТИВНОЕ ОТОБРАЖЕНИЕ ДАННЫХ ==========
+
+function formatDate(dateString) {
+    if (!dateString) return 'Нет данных';
+    
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) {
+        return 'Сегодня в ' + date.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+    } else if (diffDays === 1) {
+        return 'Вчера в ' + date.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+    } else if (diffDays < 7) {
+        return `${diffDays} дней назад`;
+    } else {
+        return date.toLocaleDateString('ru-RU');
+    }
+}
+
+function formatNumber(num) {
+    if (!num) return '0';
+    
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'k';
+    }
+    
+    return num.toString();
+}
+
+// ========== ОБНОВЛЕНИЕ СТАТУСА ONLINE ==========
+
+function updateOnlineStatus() {
+    const statusElements = document.querySelectorAll('.user-status');
+    
+    statusElements.forEach(element => {
+        // Имитация статуса (в реальном проекте будет WebSocket)
+        const isOnline = Math.random() > 0.3; // 70% шанс быть онлайн
+        
+        if (isOnline) {
+            element.innerHTML = '<span class="status-online"></span> Онлайн';
+            element.style.color = '#10b981';
+        } else {
+            const lastSeen = Math.floor(Math.random() * 60); // минут назад
+            element.innerHTML = `<span class="status-offline"></span> Был(а) ${lastSeen} мин назад`;
+            element.style.color = '#64748b';
+        }
+    });
+    
+    // Обновляем каждые 30 секунд
+    setTimeout(updateOnlineStatus, 30000);
+}
+
+// ========== ИНИЦИАЛИЗАЦИЯ ЧАТА ==========
+
+function initChat() {
+    const chatInput = document.querySelector('.chat-input');
+    const chatSendBtn = document.querySelector('.chat-send-btn');
+    const chatMessages = document.querySelector('.chat-messages');
+    
+    if (chatInput && chatSendBtn && chatMessages) {
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Добавляем сообщение пользователя
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.innerHTML = `
+                <div class="message-content">${message}</div>
+                <div class="message-time">${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}</div>
+            `;
+            chatMessages.appendChild(userMessage);
+            
+            // Очищаем поле ввода
+            chatInput.value = '';
+            
+            // Прокручиваем вниз
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Имитируем ответ бота
+            setTimeout(() => {
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot';
+                botMessage.innerHTML = `
+                    <div class="message-content">Я получил ваше сообщение: "${message}". Как виртуальный помощник, я здесь, чтобы помочь с учебой!</div>
+                    <div class="message-time">${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}</div>
+                `;
+                chatMessages.appendChild(botMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
         }
         
-        const response = await this.fetch('https://api.deepseek.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: 'deepseek-chat',
-                messages: messages,
-                max_tokens: options.max_tokens || 2000,
-                temperature: options.temperature || 0.7,
-                stream: false
-            })
+        // Обработчики событий
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
+}
+
+// ========== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ ==========
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Leo Assistant v1.5 загружен');
+    
+    // Инициализируем все компоненты
+    initMenu();
+    initFormValidation();
+    initTableScroll();
+    initChat();
+    updateOnlineStatus();
+    
+    // Добавляем текущую дату в футер
+    const footerDate = document.querySelector('.current-date');
+    if (footerDate) {
+        footerDate.textContent = new Date().toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+    
+    // Показываем приветственное уведомление
+    setTimeout(() => {
+        showNotification('Добро пожаловать в Leo Assistant v1.5!', 'success', 3000);
+    }, 1000);
+});
+
+// ========== ХЕЛПЕР ФУНКЦИИ ДЛЯ АДМИН-ПАНЕЛИ ==========
+
+// Фильтрация таблиц
+function initTableFilters() {
+    const filterInputs = document.querySelectorAll('.table-filter');
+    
+    filterInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const filterValue = this.value.toLowerCase();
+            const tableId = this.dataset.table;
+            const table = document.getElementById(tableId);
+            
+            if (table) {
+                const rows = table.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(filterValue) ? '' : 'none';
+                });
+            }
+        });
+    });
+}
+
+// Сортировка таблиц
+function initTableSorting() {
+    const sortableHeaders = document.querySelectorAll('.sortable');
+    
+    sortableHeaders.forEach(header => {
+        header.style.cursor = 'pointer';
+        
+        header.addEventListener('click', function() {
+            const table = this.closest('table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const columnIndex = Array.from(this.parentNode.children).indexOf(this);
+            
+            // Определяем направление сортировки
+            const isAscending = !this.classList.contains('asc');
+            this.classList.toggle('asc', isAscending);
+            this.classList.toggle('desc', !isAscending);
+            
+            // Сортируем строки
+            rows.sort((a, b) => {
+                const aText = a.children[columnIndex].textContent;
+                const bText = b.children[columnIndex].textContent;
+                
+                if (isAscending) {
+                    return aText.localeCompare(bText, 'ru', {numeric: true});
+                } else {
+                    return bText.localeCompare(aText, 'ru', {numeric: true});
+                }
+            });
+            
+            // Переставляем строки
+            rows.forEach(row => tbody.appendChild(row));
+        });
+    });
+}
+
+// Экспорт данных
+function exportTableToCSV(tableId, filename) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+    
+    const rows = table.querySelectorAll('tr');
+    const csv = [];
+    
+    rows.forEach(row => {
+        const rowData = [];
+        const cells = row.querySelectorAll('th, td');
+        
+        cells.forEach(cell => {
+            rowData.push(`"${cell.textContent.replace(/"/g, '""')}"`);
         });
         
-        if (response.success) {
-            return {
-                success: true,
-                message: response.data.choices[0].message.content,
-                usage: response.data.usage
-            };
-        }
-        
-        return response;
-    }
-};
-
-// ====================
-// ИНИЦИАЛИЗАЦИЯ
-// ====================
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Leo Assistant initialized');
-    
-    // Устанавливаем текущую дату
-    const dateElements = document.querySelectorAll('.current-date');
-    dateElements.forEach(el => {
-        if (!el.textContent.trim()) {
-            el.textContent = Format.date();
-        }
+        csv.push(rowData.join(','));
     });
     
-    // Устанавливаем текущее время
-    const timeElements = document.querySelectorAll('.current-time');
-    timeElements.forEach(el => {
-        if (!el.textContent.trim()) {
-            el.textContent = Format.time();
-            // Обновляем время каждую минуту
-            setInterval(() => {
-                el.textContent = Format.time();
-            }, 60000);
-        }
-    });
+    const csvContent = csv.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
     
-    // Подсветка активной навигации
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.nav-item').forEach(item => {
-        const href = item.getAttribute('href');
-        if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-            item.classList.add('active');
-        } else {
-            item.classList.remove('active');
-        }
-    });
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'export.csv';
+    a.click();
     
-    // Загрузка данных пользователя
-    const savedUser = Storage.load('current_user');
-    if (savedUser) {
-        currentUser = { ...currentUser, ...savedUser };
-    }
+    URL.revokeObjectURL(url);
+    showNotification('Данные экспортированы в CSV', 'success');
+}
+
+// ========== ГЛОБАЛЬНЫЕ ФУНКЦИИ ==========
+
+// Делаем функции доступными глобально
+window.showNotification = showNotification;
+window.formatDate = formatDate;
+window.formatNumber = formatNumber;
+window.exportTableToCSV = exportTableToCSV;
+
+// Автоматическое обновление каждые 5 минут
+setInterval(() => {
+    if (document.hidden) return; // Не обновляем если вкладка неактивна
     
-    // Обновляем имя пользователя на страницах
-    const userElements = document.querySelectorAll('.user-name, .username');
-    userElements.forEach(el => {
-        if (el.textContent.includes('Максим') || el.textContent.includes('Усков')) {
-            el.textContent = currentUser.name;
-        }
-    });
-    
-    // Обновляем аватар
-    const avatarElements = document.querySelectorAll('.avatar:not([data-static])');
-    avatarElements.forEach(el => {
-        if (el.textContent === 'МУ' || el.textContent === 'УМ') {
-            const initials = currentUser.name.split(' ').map(n => n[0]).join('');
-            el.textContent = initials.toUpperCase();
-        }
-    });
-    
-    // Инициализация темной темы
-    const isDarkMode = localStorage.getItem('dark_mode') === 'true';
-    if (isDarkMode) {
-        document.body.classList.add('dark');
-    }
-    
-    // Добавляем стили для уведомлений и модалок
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        
-        .modal {
-            background: white;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: modalIn 0.3s ease-out;
-        }
-        
-        @keyframes modalIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .modal-content {
-            padding: 20px;
-        }
-        
-        .modal-footer {
-            padding: 20px;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #64748b;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .modal-close:hover {
-            background: #f1f5f9;
-            color: #1e293b;
-        }
-        
-        .loader {
-            text-align: center;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .loader-text {
-            color: #64748b;
-            font-size: 16px;
-        }
-        
-        .notification-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .notification-close {
-            background: none;
-            border: none;
-            color: white;
-            opacity: 0.7;
-            cursor: pointer;
-            transition: opacity 0.3s;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .notification-close:hover {
-            opacity: 1;
-            background: rgba(255,255,255,0.1);
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Инициализация горячих клавиш
-    document.addEventListener('keydown', function(e) {
-        // Ctrl/Cmd + S - сохранить
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            e.preventDefault();
-            const saveBtns = document.querySelectorAll('button[onclick*="save"], .save-btn');
-            if (saveBtns.length > 0) {
-                saveBtns[0].click();
-            }
-        }
-        
-        // Escape - закрыть модалки
-        if (e.key === 'Escape') {
-            UI.closeModal();
-        }
-        
-        // F1 - помощь
-        if (e.key === 'F1') {
-            e.preventDefault();
-            UI.showModal('Помощь', `
-                <h4>Горячие клавиши:</h4>
-                <ul>
-                    <li><strong>Ctrl/Cmd + S</strong> - Сохранить</li>
-                    <li><strong>Escape</strong> - Закрыть модальное окно</li>
-                    <li><strong>F1</strong> - Эта справка</li>
-                </ul>
-                
-                <h4>Поддержка:</h4>
-                <p>Если у вас возникли проблемы, обратитесь в поддержку.</p>
-            `);
-        }
-    });
-});
-
-// ====================
-// ЭКСПОРТ ГЛОБАЛЬНЫХ ФУНКЦИЙ
-// ====================
-window.Storage = Storage;
-window.UI = UI;
-window.Format = Format;
-window.Validate = Validate;
-window.Api = Api;
-window.currentUser = currentUser;
-
-// Глобальные вспомогательные функции
-window.navigateTo = function(page) {
-    window.location.href = page;
-};
-
-window.goBack = function() {
-    window.history.back();
-};
-
-window.refreshPage = function() {
-    window.location.reload();
-};
-
-window.copyToClipboard = function(text) {
-    navigator.clipboard.writeText(text)
-        .then(() => UI.showNotification('Скопировано в буфер обмена', 'success'))
-        .catch(() => UI.showNotification('Не удалось скопировать', 'error'));
-};
-
-window.toggleDarkMode = function() {
-    document.body.classList.toggle('dark');
-    localStorage.setItem('dark_mode', document.body.classList.contains('dark'));
-    UI.showNotification('Тема изменена', 'success');
-};
-
-// Автосохранение при закрытии страницы
-window.addEventListener('beforeunload', function(e) {
-    // Можно добавить подтверждение закрытия, если есть несохраненные данные
-    // const hasUnsavedChanges = false;
-    // if (hasUnsavedChanges) {
-    //     e.preventDefault();
-    //     e.returnValue = 'У вас есть несохраненные изменения. Вы уверены?';
-    // }
-});
-
-console.log('✨ script.js loaded successfully');
+    // Здесь можно добавить обновление данных
+    console.log('Автообновление данных...');
+}, 300000); // 5 минут
