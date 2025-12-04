@@ -1,159 +1,655 @@
-<!-- Добавьте этот код в начало body каждого HTML файла -->
-
-<!-- Кнопка меню для мобильных -->
-<button class="menu-toggle" id="menuToggle">
-    <i class="fas fa-bars"></i>
-</button>
-
-<!-- Оверлей для меню -->
-<div class="menu-overlay"></div>
-
-<!-- Навигационное меню -->
-<nav class="nav-container">
-    <div class="nav-header">
-        <h2 class="nav-title">Leo Assistant</h2>
-        <p class="nav-subtitle">7Б Класс v1.5</p>
-    </div>
-    
-    <div class="nav-menu">
-        <a href="index.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Главная</span>
-        </a>
-        
-        <a
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лео - помощник 7Б класса</title>
+    <title>Leo Assistant - Образовательная платформа 7Б класса</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
 </head>
 <body>
-    <div class="header">
-        <div class="user-info">
-            <div class="avatar">МУ</div>
-            <div class="user-details">
-                <h2>Усков Максим</h2>
-                <div class="status">
-                    <div class="status-dot"></div>
-                    <span>ONLINE</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Кнопка меню для мобильных -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">
+        <i class="fas fa-bars"></i>
+    </button>
 
-    <div class="container fade-in">
-        <h1 class="text-center">Добро пожаловать!</h1>
-        <p class="text-center">Усков Максим</p>
-
-        <div class="quick-actions">
-            <a href="chat.html" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <h3>Лео Ассистент</h3>
-                <p>Задай вопрос</p>
-            </a>
-
-            <a href="friends.html" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3>Друзья</h3>
-                <p>0 в списке</p>
-            </a>
-
-            <a href="schedule.html" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <h3>Расписание</h3>
-                <p>На неделю</p>
-            </a>
-
-            <a href="homework.html" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-book"></i>
-                </div>
-                <h3>Домашка</h3>
-                <p>Проверить</p>
-            </a>
-        </div>
-
-        <div class="card tip-card">
-            <h3><i class="fas fa-lightbulb"></i> Совет</h3>
-            <p>Используй Лео Ассистента для решения задач по любым предметам! 💡</p>
-        </div>
-
-        <div class="card">
-            <h2><i class="fas fa-trophy"></i> Топ учеников</h2>
-            
-            <div class="ranking">
-                <div class="ranking-item">
-                    <div class="rank-number">1</div>
-                    <div class="ranking-details">
-                        <h4>Усков Максим</h4>
-                        <p>ID: 30683 • Уровень 11</p>
-                    </div>
-                    <div class="points">500</div>
-                </div>
-
-                <div class="ranking-item">
-                    <div class="rank-number">2</div>
-                    <div class="ranking-details">
-                        <h4>Шиляева Луиза</h4>
-                        <p>ID: 80344 • Уровень 8</p>
-                    </div>
-                    <div class="points">350</div>
-                </div>
-
-                <div class="ranking-item">
-                    <div class="rank-number">3</div>
-                    <div class="ranking-details">
-                        <h4>Руднева Анна</h4>
-                        <p>ID: 81341 • Уровень 5</p>
-                    </div>
-                    <div class="points">200</div>
-                </div>
-            </div>
-        </div>
-
-        <button class="btn" onclick="location.href='chat.html'">
-            <i class="fas fa-comment-dots"></i> Начать общение с Лео
-        </button>
-    </div>
+    <!-- Оверлей для меню -->
+    <div class="menu-overlay" id="menuOverlay"></div>
 
     <!-- Навигационное меню -->
-    <nav class="navbar">
-        <a href="index.html" class="nav-item active">
-            <i class="fas fa-home nav-icon"></i>
-            <span>Главная</span>
-        </a>
-        <a href="chat.html" class="nav-item">
-            <i class="fas fa-robot nav-icon"></i>
-            <span>Лео</span>
-        </a>
-        <a href="friends.html" class="nav-item">
-            <i class="fas fa-users nav-icon"></i>
-            <span>Друзья</span>
-        </a>
-        <a href="schedule.html" class="nav-item">
-            <i class="fas fa-calendar-alt nav-icon"></i>
-            <span>Расписание</span>
-        </a>
-        <a href="homework.html" class="nav-item">
-            <i class="fas fa-book nav-icon"></i>
-            <span>Домашка</span>
-        </a>
-        <a href="profile.html" class="nav-item">
-            <i class="fas fa-user nav-icon"></i>
-            <span>Профиль</span>
-        </a>
+    <nav class="nav-container" id="navContainer">
+        <div class="nav-header">
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+                <div class="logo-text">
+                    <h2>Leo Assistant</h2>
+                    <p>7Б Класс v1.5</p>
+                </div>
+            </div>
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">Иван Иванов</div>
+                    <div class="user-status">
+                        <span class="status-online"></span> Онлайн
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </a>
+            
+            <a href="chat.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                <span>Лео Ассистент</span>
+            </a>
+            
+            <a href="schedule.html" class="nav-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Расписание</span>
+            </a>
+            
+            <a href="homework.html" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>Домашние задания</span>
+                <span class="badge">3</span>
+            </a>
+            
+            <a href="friends.html" class="nav-item">
+                <i class="fas fa-user-friends"></i>
+                <span>Друзья</span>
+                <span class="badge">5</span>
+            </a>
+            
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Мой профиль</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="admin.html" class="nav-item">
+                <i class="fas fa-cogs"></i>
+                <span>Админ-панель</span>
+            </a>
+            
+            <a href="activity.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Активность</span>
+            </a>
+            
+            <a href="users.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Пользователи</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <div class="nav-item nav-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Выйти</span>
+            </div>
+        </div>
+        
+        <div class="nav-footer">
+            <div class="system-info">
+                <div class="info-item">
+                    <i class="fas fa-server"></i>
+                    <span>Система: <strong>Стабильная</strong></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>Версия: <strong>1.5.0</strong></span>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2024 Leo Assistant. Все права защищены.
+            </div>
+        </div>
     </nav>
 
+    <!-- Основной контент -->
+    <main class="main-content">
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">Главная панель</h1>
+                <p class="page-subtitle">Добро пожаловать в образовательную платформу 7Б класса</p>
+            </div>
+            <div class="header-actions">
+                <div class="current-time" id="currentTime">
+                    <i class="fas fa-clock"></i>
+                    <span>Загрузка времени...</span>
+                </div>
+                <button class="btn btn-primary" id="quickHelpBtn">
+                    <i class="fas fa-question-circle"></i>
+                    Быстрая помощь
+                </button>
+            </div>
+        </header>
+
+        <!-- Статистика -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stat-number" id="userLevel">7</div>
+                <div class="stat-label">Уровень</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-number" id="userPoints">1,250</div>
+                <div class="stat-label">Очки (✈)</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number" id="completedTasks">12</div>
+                <div class="stat-label">Выполнено ДЗ</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number" id="activeDays">24</div>
+                <div class="stat-label">Дней активности</div>
+            </div>
+        </section>
+
+        <!-- Быстрые действия -->
+        <section class="card">
+            <h2 class="card-title">
+                <i class="fas fa-bolt"></i>
+                Быстрые действия
+            </h2>
+            <div class="quick-actions">
+                <button class="btn-action" onclick="window.location.href='chat.html'">
+                    <i class="fas fa-robot"></i>
+                    <span>Задать вопрос Лео</span>
+                </button>
+                
+                <button class="btn-action" onclick="window.location.href='homework.html'">
+                    <i class="fas fa-tasks"></i>
+                    <span>Проверить ДЗ</span>
+                </button>
+                
+                <button class="btn-action" onclick="window.location.href='schedule.html'">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Расписание на завтра</span>
+                </button>
+                
+                <button class="btn-action" onclick="showAddFriendModal()">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Добавить друга</span>
+                </button>
+                
+                <button class="btn-action" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-edit"></i>
+                    <span>Редактировать профиль</span>
+                </button>
+                
+                <button class="btn-action" id="quickReportBtn">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Отчёт об успеваемости</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Ближайшие события -->
+        <div class="grid-2-col">
+            <section class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-calendar-day"></i>
+                    Сегодня в расписании
+                </h2>
+                <div class="today-schedule" id="todaySchedule">
+                    <!-- Динамически загружается -->
+                    <div class="loading-indicator">
+                        <div class="loading"></div>
+                        <span>Загрузка расписания...</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="schedule.html" class="link">
+                        <i class="fas fa-external-link-alt"></i>
+                        Полное расписание
+                    </a>
+                </div>
+            </section>
+            
+            <section class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-trophy"></i>
+                    Топ учеников
+                </h2>
+                <div class="leaderboard" id="leaderboard">
+                    <div class="loading-indicator">
+                        <div class="loading"></div>
+                        <span>Загрузка рейтинга...</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="friends.html" class="link">
+                        <i class="fas fa-external-link-alt"></i>
+                        Все друзья
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Актуальные задания -->
+        <section class="card">
+            <h2 class="card-title">
+                <i class="fas fa-exclamation-circle"></i>
+                Срочные задания
+            </h2>
+            <div class="urgent-tasks" id="urgentTasks">
+                <div class="task-item">
+                    <div class="task-priority high"></div>
+                    <div class="task-content">
+                        <div class="task-title">Дроби и их сокращение</div>
+                        <div class="task-meta">
+                            <span class="task-subject">Математика</span>
+                            <span class="task-deadline">Сдать до: завтра</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="window.location.href='homework.html'">
+                        Выполнить
+                    </button>
+                </div>
+                
+                <div class="task-item">
+                    <div class="task-priority medium"></div>
+                    <div class="task-content">
+                        <div class="task-title">Периодическая таблица</div>
+                        <div class="task-meta">
+                            <span class="task-subject">Химия</span>
+                            <span class="task-deadline">Сдать до: 2 дня</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-secondary" onclick="window.location.href='homework.html'">
+                        Посмотреть
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Новости и обновления -->
+        <section class="card">
+            <h2 class="card-title">
+                <i class="fas fa-newspaper"></i>
+                Новости системы
+            </h2>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-date">Сегодня</div>
+                    <div class="news-content">
+                        <div class="news-title">Запущена новая версия 1.5!</div>
+                        <p>Добавлен новый интерфейс, улучшена производительность и исправлены ошибки.</p>
+                    </div>
+                </div>
+                
+                <div class="news-item">
+                    <div class="news-date">Вчера</div>
+                    <div class="news-content">
+                        <div class="news-title">Обновление расписания</div>
+                        <p>Внесены изменения в расписание на следующую неделю. Проверьте раздел "Расписание".</p>
+                    </div>
+                </div>
+                
+                <div class="news-item">
+                    <div class="news-date">2 дня назад</div>
+                    <div class="news-content">
+                        <div class="news-title">Новые задания по математике</div>
+                        <p>Добавлены 5 новых заданий по теме "Дроби". Доступны в разделе "Домашние задания".</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Футер страницы -->
+        <footer class="page-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Leo Assistant</h4>
+                    <p>Образовательная платформа для 7Б класса</p>
+                    <p>Версия: 1.5.0</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Контакты</h4>
+                    <p>По вопросам работы системы:</p>
+                    <p>Техподдержка: support@leo-assistant.ru</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Статистика</h4>
+                    <div class="footer-stats">
+                        <div class="footer-stat">
+                            <span class="stat-value" id="totalUsers">0</span>
+                            <span class="stat-label">Пользователей</span>
+                        </div>
+                        <div class="footer-stat">
+                            <span class="stat-value" id="totalQuestions">0</span>
+                            <span class="stat-label">Вопросов</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 Leo Assistant. Все права защищены.</p>
+                <p class="current-date" id="currentDate"></p>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Модальное окно добавления друга -->
+    <div class="modal" id="addFriendModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Добавить друга</h3>
+                <button class="modal-close" onclick="closeAddFriendModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="friendId">ID друга</label>
+                    <input type="text" id="friendId" placeholder="Введите ID профиля (например: 12345)" maxlength="6">
+                    <small class="form-hint">ID состоит из 5-6 цифр</small>
+                </div>
+                
+                <div class="friend-search-result" id="friendSearchResult">
+                    <!-- Результат поиска появится здесь -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddFriendModal()">Отмена</button>
+                <button class="btn btn-primary" onclick="sendFriendRequest()">Отправить запрос</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомления будут добавляться сюда -->
+    <div id="notificationsContainer"></div>
+
     <script src="script.js"></script>
+    <script>
+        // Инициализация главной страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обновление времени
+            function updateTime() {
+                const now = new Date();
+                const timeElement = document.getElementById('currentTime');
+                const dateElement = document.getElementById('currentDate');
+                
+                if (timeElement) {
+                    timeElement.innerHTML = `
+                        <i class="fas fa-clock"></i>
+                        <span>${now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}</span>
+                    `;
+                }
+                
+                if (dateElement) {
+                    dateElement.textContent = now.toLocaleDateString('ru-RU', {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    });
+                }
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // Загрузка сегодняшнего расписания
+            loadTodaySchedule();
+            
+            // Загрузка рейтинга
+            loadLeaderboard();
+            
+            // Загрузка статистики
+            loadSystemStats();
+            
+            // Обработчики кнопок
+            document.getElementById('quickHelpBtn').addEventListener('click', function() {
+                window.location.href = 'chat.html';
+                showNotification('Перенаправляем в чат с Лео...', 'info');
+            });
+            
+            document.getElementById('quickReportBtn').addEventListener('click', function() {
+                showNotification('Функция отчёта в разработке', 'info');
+            });
+            
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Вы уверены, что хотите выйти из системы?')) {
+                    showNotification('Выход из системы...', 'warning');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
+                }
+            });
+            
+            // Поиск друга по ID
+            document.getElementById('friendId').addEventListener('input', function() {
+                const id = this.value.trim();
+                if (id.length >= 5) {
+                    searchFriend(id);
+                }
+            });
+        });
+        
+        function loadTodaySchedule() {
+            const today = new Date().getDay();
+            const dayNames = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            const todayName = dayNames[today];
+            
+            // Демо-расписание (в реальном проекте будет AJAX запрос)
+            const schedule = {
+                1: [ // Понедельник
+                    { time: '13:10-13:50', subject: 'История', room: '16 Каб' },
+                    { time: '14:00-14:40', subject: 'Разговоры о важном', room: '21 Каб' },
+                    { time: '14:50-15:30', subject: 'Биология', room: '21 Каб' }
+                ],
+                2: [ // Вторник
+                    { time: '13:10-13:50', subject: 'Информатика-пл', room: '42 Каб' },
+                    { time: '14:00-14:40', subject: 'История', room: '16 Каб' }
+                ],
+                3: [ // Среда
+                    { time: '13:10-13:50', subject: 'Физика', room: '35 Каб' },
+                    { time: '14:00-14:40', subject: 'История', room: '16 Каб' }
+                ],
+                4: [ // Четверг
+                    { time: '13:10-13:50', subject: 'Алгебра', room: '34 Каб' },
+                    { time: '14:00-14:40', subject: 'Вероятность и Статистика', room: '34 Каб' }
+                ],
+                5: [ // Пятница
+                    { time: '13:10-13:50', subject: 'Алгебра', room: '34 Каб' },
+                    { time: '14:00-14:40', subject: 'Английский язык/Информатика', room: '12/42 Каб' }
+                ],
+                6: [ // Суббота
+                    { time: '12:20-13:00', subject: 'Музыка', room: 'АЗ' },
+                    { time: '13:10-13:50', subject: 'Математика-пл', room: '34 Каб' }
+                ]
+            };
+            
+            const todaySchedule = schedule[today] || [];
+            const container = document.getElementById('todaySchedule');
+            
+            if (todaySchedule.length > 0) {
+                let html = `
+                    <div class="schedule-header">
+                        <h3>${todayName}</h3>
+                        <span class="schedule-count">${todaySchedule.length} урока</span>
+                    </div>
+                    <div class="schedule-list">
+                `;
+                
+                todaySchedule.forEach(lesson => {
+                    html += `
+                        <div class="schedule-item">
+                            <div class="lesson-time">${lesson.time}</div>
+                            <div class="lesson-info">
+                                <div class="lesson-subject">${lesson.subject}</div>
+                                <div class="lesson-room">${lesson.room}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>Сегодня занятий нет</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function loadLeaderboard() {
+            // Демо-данные лидерборда
+            const leaders = [
+                { name: 'Алексей Петров', id: '12345', level: 12, points: 2450 },
+                { name: 'Мария Сидорова', id: '23456', level: 11, points: 2300 },
+                { name: 'Дмитрий Иванов', id: '34567', level: 10, points: 2100 },
+                { name: 'Анна Кузнецова', id: '45678', level: 9, points: 1950 },
+                { name: 'Сергей Смирнов', id: '56789', level: 8, points: 1800 }
+            ];
+            
+            const container = document.getElementById('leaderboard');
+            let html = '<div class="leaderboard-list">';
+            
+            leaders.forEach((leader, index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1) + '.';
+                
+                html += `
+                    <div class="leaderboard-item">
+                        <div class="leader-rank">${medal}</div>
+                        <div class="leader-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="leader-info">
+                            <div class="leader-name">${leader.name}</div>
+                            <div class="leader-id">ID: ${leader.id}</div>
+                        </div>
+                        <div class="leader-stats">
+                            <div class="leader-level">Ур. ${leader.level}</div>
+                            <div class="leader-points">${leader.points} ✈</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        function loadSystemStats() {
+            // Демо-статистика
+            document.getElementById('totalUsers').textContent = '47';
+            document.getElementById('totalQuestions').textContent = '1,234';
+        }
+        
+        function showAddFriendModal() {
+            document.getElementById('addFriendModal').style.display = 'block';
+            document.getElementById('friendId').focus();
+        }
+        
+        function closeAddFriendModal() {
+            document.getElementById('addFriendModal').style.display = 'none';
+            document.getElementById('friendId').value = '';
+            document.getElementById('friendSearchResult').innerHTML = '';
+        }
+        
+        function searchFriend(id) {
+            const resultContainer = document.getElementById('friendSearchResult');
+            
+            // Демо-поиск (в реальном проекте будет AJAX)
+            if (id === '12345') {
+                resultContainer.innerHTML = `
+                    <div class="friend-found">
+                        <div class="friend-info">
+                            <div class="friend-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="friend-details">
+                                <div class="friend-name">Алексей Петров</div>
+                                <div class="friend-meta">7Б класс • Уровень 12</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (id === '23456') {
+                resultContainer.innerHTML = `
+                    <div class="friend-found">
+                        <div class="friend-info">
+                            <div class="friend-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="friend-details">
+                                <div class="friend-name">Мария Сидорова</div>
+                                <div class="friend-meta">7Б класс • Уровень 11</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultContainer.innerHTML = `
+                    <div class="friend-not-found">
+                        <i class="fas fa-user-slash"></i>
+                        <p>Пользователь с ID ${id} не найден</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function sendFriendRequest() {
+            const friendId = document.getElementById('friendId').value.trim();
+            
+            if (!friendId || friendId.length < 5) {
+                showNotification('Введите корректный ID друга', 'error');
+                return;
+            }
+            
+            if (friendId === '12345' || friendId === '23456') {
+                showNotification('Запрос в друзья отправлен!', 'success');
+                closeAddFriendModal();
+                
+                // Обновляем счетчик друзей
+                const badge = document.querySelector('.nav-item[href="friends.html"] .badge');
+                if (badge) {
+                    badge.textContent = parseInt(badge.textContent) + 1;
+                }
+            } else {
+                showNotification('Пользователь не найден', 'error');
+            }
+        }
+        
+        // Закрытие модального окна по клику вне его
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('addFriendModal');
+            if (event.target === modal) {
+                closeAddFriendModal();
+            }
+        });
+    </script>
 </body>
 </html>
